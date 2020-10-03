@@ -1,3 +1,7 @@
+import java.util.Arrays;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.Function;
+
 public class MathUtils {
     public static double[] linspace(double min, double max, int num) {
         double[] out = new double[num];
@@ -9,5 +13,10 @@ public class MathUtils {
         }
 
         return out;
+    }
+
+
+    public static double[] apply(DoubleUnaryOperator f, double[] x) {
+        return Arrays.stream(x).map(f).toArray();
     }
 }

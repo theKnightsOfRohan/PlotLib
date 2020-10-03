@@ -13,8 +13,8 @@ public class Main extends PApplet {
         plt = new Plot(100, 100, 600, 600);
 
         double[] x = MathUtils.linspace( -2.0*Math.PI, 2.0*Math.PI, 1000);
-        double[] y1 = Arrays.stream(x).map(Math::sin).toArray();
-        double[] y2 = Arrays.stream(x).map(Math::cos).toArray();
+        double[] y1 = MathUtils.apply(Math::sin, x);
+        double[] y2 = MathUtils.apply(Math::cos, x);
 
         plt.set(Plot.Setting.show_axes, true);      // TODO: make a nice api for this
         plt.set(Plot.Setting.show_border, true);
