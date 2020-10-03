@@ -19,7 +19,7 @@ public class Plot {
     public Plot(int cornerX, int cornerY, int w, int h) {
         this.cornerX = cornerX;
         this.cornerY = cornerY;
-        this.width = w;             // TODO:  why is width and height always wrong???
+        this.width = w;
         this.height = h;
         this.datasets = new ArrayList<>();
         settings = new HashMap<Setting, Boolean>();
@@ -94,7 +94,7 @@ public class Plot {
         if (settings.containsKey(Setting.show_border)) {
             window.noFill();
             window.stroke(PlotData.BLACK);
-            window.rect(cornerX, cornerY, cornerX+width, cornerX+height);
+            window.rect(cornerX, cornerY, width, height);
         }
     }
 
