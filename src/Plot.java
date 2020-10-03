@@ -28,6 +28,13 @@ public class Plot {
     }
 
     public void draw(PApplet window) {
+        for (PlotData dataset : datasets) {
+            if (dataset.isDirty()) {
+                updateDataBoundsWith(dataset);
+                dataset.setClean();
+            }
+        }
+
         drawAxes(window);
         plotPoints(window);
     }
@@ -36,11 +43,29 @@ public class Plot {
         List<Double> xList = MathUtils.toList(xData);
         List<Double> yList = MathUtils.toList(yData);
 
-        PlotData data = new PlotData( xList, yList );
+        PlotData data = new PlotData(xList, yList);
         updateDataBoundsWith(data);
         this.datasets.add(data);
 
         return data;
+    }
+
+    public PlotData plot(int index, double x, double y) {
+        PlotData data;
+        if (index >= 0 && index < datasets.size()) {
+            data = datasets.get(index);
+        } else {
+            data = new PlotData();
+            this.datasets.add(data);
+        }
+
+        data.add(x, y);
+        updateDataBoundsWith(data);
+        return data;
+    }
+
+    public PlotData plot(double x, double y) {
+        return plot(0, x, y);
     }
 
     private void updateDataBoundsWith(PlotData data) {

@@ -12,6 +12,7 @@ public class PlotData {
     private double minX, maxX, minY, maxY;  // for raw values in x, y
     private int strokeColor, fillColor;
     private boolean scaleChanged = false;
+    private boolean dirty = false;
 
     public PlotData(List<Double> x, List<Double> y) {
         this.x = x;
@@ -22,6 +23,10 @@ public class PlotData {
 
         strokeColor = BLACK;
         fillColor = BLACK;
+    }
+
+    public PlotData() {
+        this(new ArrayList<Double>(), new ArrayList<Double>());
     }
 
     private void reCalculateBounds() {
@@ -35,6 +40,7 @@ public class PlotData {
         y.add(new_y);
 
         updateBounds(new_x, new_y);
+        dirty = true;   // so parent can re-calculate bounds if desired.
     }
 
     private void updateBounds(double new_x, double new_y) {
@@ -133,4 +139,11 @@ public class PlotData {
     }
 
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setClean() {
+        this.dirty = false;
+    }
 }
