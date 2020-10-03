@@ -2,8 +2,6 @@ import processing.core.PApplet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 public class Plot {
     public enum Setting {
@@ -35,8 +33,8 @@ public class Plot {
     }
 
     public PlotData plot(double[] xData, double[] yData) {
-        List<Double> xList = DoubleStream.of(xData).boxed().collect(Collectors.toList());
-        List<Double> yList = DoubleStream.of(yData).boxed().collect(Collectors.toList());
+        List<Double> xList = MathUtils.toList(xData);
+        List<Double> yList = MathUtils.toList(yData);
 
         PlotData data = new PlotData( xList, yList );
         updateDataBoundsWith(data);

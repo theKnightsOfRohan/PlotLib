@@ -1,6 +1,9 @@
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 public class MathUtils {
     public static double[] linspace(double min, double max, int num) {
@@ -15,8 +18,11 @@ public class MathUtils {
         return out;
     }
 
-
     public static double[] apply(DoubleUnaryOperator f, double[] x) {
         return Arrays.stream(x).map(f).toArray();
+    }
+
+    public static List<Double> toList(double[] arr) {
+        return DoubleStream.of(arr).boxed().collect(Collectors.toList());
     }
 }
