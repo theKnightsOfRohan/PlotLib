@@ -30,11 +30,11 @@ public class PlotData {
         }
     }
 
-    public void add(double dx, double dy) {
-        x.add(dx);
-        y.add(dy);
+    public void add(double new_x, double new_y) {
+        x.add(new_x);
+        y.add(new_y);
 
-        updateBounds(dx, dy);
+        updateBounds(new_x, new_y);
     }
 
     private void updateBounds(double new_x, double new_y) {
