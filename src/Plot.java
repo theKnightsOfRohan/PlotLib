@@ -1,11 +1,13 @@
 import processing.core.PApplet;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class Plot {
     public enum Setting {
-        show_axes, show_border
+        show_axes, freeze_y_scale, freeze_x_scale, show_border
     }
 
     private int cornerX, cornerY, width, height;
@@ -69,8 +71,21 @@ public class Plot {
     }
 
     private void updateDataBoundsWith(PlotData data) {
+        if (!settings.containsKey(Setting.freeze_y_scale)) {
+            updateYBoundsWith(data);
+        }
+
+        if (!settings.containsKey(Setting.freeze_x_scale)) {
+            updateXBoundsWith(data);
+        }
+    }
+
+    private void updateXBoundsWith(PlotData data) {
         if (data.getDataMinX() < dataMinX) dataMinX = data.getDataMinX();
         if (data.getDataMaxX() > dataMaxX) dataMaxX = data.getDataMaxX();
+    }
+
+    private void updateYBoundsWith(PlotData data) {
         if (data.getDataMinY() < dataMinY) dataMinY = data.getDataMinY();
         if (data.getDataMaxY() > dataMaxY) dataMaxY = data.getDataMaxY();
     }
@@ -84,25 +99,36 @@ public class Plot {
     }
 
     private void plotDataSet(PApplet window, PlotData dataset) {
-        dataset.rescale(cornerX, cornerX+width, cornerY+height, cornerY);
+        dataset.rescale(cornerX, cornerX + width, cornerY + height, cornerY);
+
         // TODO: refactor so datasets draw themselves...?
         window.fill(dataset.getFillColor());
         window.stroke(dataset.getStrokeColor());
 
-        for (int i = 0; i < dataset.size(); i++) {
-            window.ellipse(dataset.getDisplayX(i), dataset.getDisplayY(i), 2, 2);
+        if (dataset.getStyle() == PlotData.Style.POINT) {
+            for (int i = 0; i < dataset.size(); i++) {
+                window.ellipse(dataset.getDisplayX(i), dataset.getDisplayY(i), 2, 2);
+            }
+        } else if (dataset.getStyle() == PlotData.Style.LINE) {
+            for (int i = 1; i < dataset.size(); i++) {
+                float x1 = dataset.getDisplayX(i-1);
+                float y1 = dataset.getDisplayY(i-1);
+                float x2 = dataset.getDisplayX(i);
+                float y2 = dataset.getDisplayY(i);
+                window.line(x1, y1, x2, y2);
+            }
         }
     }
 
     private void reScaleData(PApplet window) {
-
+        // TODO: hmm??
     }
 
     private void printDebugInfo() {
         System.out.println("Datax: [" + dataMinX + ", " + dataMaxX + "]");
         System.out.println("Datay: [" + dataMinY + ", " + dataMaxY + "]");
-        System.out.println("screen x: [" + cornerX + ", " + cornerX+width + "]");
-        System.out.println("screen y: [" + cornerY + ", " + cornerY+height + "]");
+        System.out.println("screen x: [" + cornerX + ", " + cornerX + width + "]");
+        System.out.println("screen y: [" + cornerY + ", " + cornerY + height + "]");
     }
 
     private void drawAxes(PApplet window) {
@@ -122,22 +148,22 @@ public class Plot {
     }
 
     public double getScreenXFor(double dataX) {
-        return map(dataX, dataMinX, dataMaxX, cornerX, cornerX+width);  // TODO: use getters for this
+        return map(dataX, dataMinX, dataMaxX, cornerX, cornerX + width);  // TODO: use getters for this
     }
 
     public double getScreenYFor(double dataY) {
-        return map(dataY, dataMinY, dataMaxY, cornerY+height, cornerY);  // TODO: use getters for this
+        return map(dataY, dataMinY, dataMaxY, cornerY + height, cornerY);  // TODO: use getters for this
     }
 
     public double getDataXFor(double screenX) {
-        return map(screenX, cornerX, cornerX+width, dataMinX, dataMaxX);  // TODO: use getters for this
+        return map(screenX, cornerX, cornerX + width, dataMinX, dataMaxX);  // TODO: use getters for this
     }
 
     public double getDataYFor(double screenY) {
-        return map(screenY, cornerY+height, cornerY, dataMinY, dataMaxY);  // TODO: use getters for this
+        return map(screenY, cornerY + height, cornerY, dataMinY, dataMaxY);  // TODO: use getters for this
     }
 
     public static double map(double target, double low1, double high1, double low2, double high2) {
-        return ((target - low1)/(high1-low1))*(high2-low2) + low2;
+        return ((target - low1) / (high1 - low1)) * (high2 - low2) + low2;
     }
 }
