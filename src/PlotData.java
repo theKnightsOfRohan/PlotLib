@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlotData {
+    public enum Style { POINT, LINE }
     public static final int BLACK = 0xFF000000;
     public static final int RED = 0xFFFF0000;
     public static final int BLUE = 0xFF0000FF;
@@ -11,7 +12,7 @@ public class PlotData {
     private List<Integer> pixelX, pixelY;  // display coords
     private double minX, maxX, minY, maxY;  // for raw values in x, y
     private int strokeColor, fillColor;
-    private boolean scaleChanged = false;
+    private Style style;
     private boolean dirty = false;
 
     public PlotData(List<Double> x, List<Double> y) {
@@ -23,6 +24,7 @@ public class PlotData {
 
         strokeColor = BLACK;
         fillColor = BLACK;
+        style = Style.POINT;
     }
 
     public PlotData() {
@@ -46,19 +48,15 @@ public class PlotData {
     private void updateBounds(double new_x, double new_y) {
         if (new_x < minX) {
             minX = new_x;
-            scaleChanged = true;
         }
         if (new_x > maxX) {
             maxX = new_x;
-            scaleChanged = true;
         }
         if (new_y < minY) {
             minY = new_y;
-            scaleChanged = true;
         }
         if (new_y > maxY) {
             maxY = new_y;
-            scaleChanged = true;
         }
     }
 
@@ -90,6 +88,14 @@ public class PlotData {
         return this.pixelY.get(i);
     }
 
+    /***
+     * Re-scale dataset to bounds given by parameters.  Used by Plot to transform data for display once and then
+     * never again until updated.
+     * @param displayMinX
+     * @param displayMaxX
+     * @param displayMinY
+     * @param displayMaxY
+     */
     public void rescale(double displayMinX, double displayMaxX, double displayMinY, double displayMaxY) {
         pixelX.clear();
         pixelY.clear();
@@ -110,6 +116,15 @@ public class PlotData {
         return this;
     }
 
+    public PlotData style(String style) {
+        if (style.equals(".")) {
+            this.style = Style.POINT;
+        } else if (style.equals("-")) {
+            this.style = Style.LINE;
+        }
+        return this;
+    }
+
     private int getValFor(String color) {
         if (color.equals("red")) {
             return RED;
@@ -117,6 +132,8 @@ public class PlotData {
             return BLUE;
         } else if (color.equals("black")) {
             return BLACK;
+        } else if (color.equals("green")) {
+            return GREEN;
         }
 
         return BLACK;
@@ -145,5 +162,9 @@ public class PlotData {
 
     public void setClean() {
         this.dirty = false;
+    }
+
+    public Style getStyle() {
+        return this.style;
     }
 }
