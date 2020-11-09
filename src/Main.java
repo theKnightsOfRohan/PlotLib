@@ -10,7 +10,7 @@ public class Main extends PApplet {
     }
 
     public void setup() {
-        plt = new Plot(0, 0, 200, 200);
+        plt = new Plot(100, 100, 700, 700);
 
         double[] x = MathUtils.linspace( -2.0*Math.PI, 2.0*Math.PI, 1000);
         double[] y1 = MathUtils.apply(Math::sin, x);
@@ -19,8 +19,8 @@ public class Main extends PApplet {
         plt.set(Plot.Setting.show_axes, true);      // TODO: make a nice api for this
         plt.set(Plot.Setting.show_border, true);
 
-        plt.plot(x, y1).fillColor("red").strokeColor("red");
-        plt.plot(x, y2).fillColor("blue").strokeColor("blue");
+        plt.plot(x, y1).fillColor("red").strokeColor("red").style("-");
+        plt.plot(x, y2).fillColor("blue").strokeColor("blue").style("-");
     }
 
     public void draw() {
