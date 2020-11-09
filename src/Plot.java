@@ -29,6 +29,11 @@ public class Plot {
         settings.put(setting, value);
     }
 
+    public void setYDataRange(int min, int max) {
+        this.dataMinY = min;
+        this.dataMaxY = max;
+    }
+
     public void draw(PApplet window) {
         for (PlotData dataset : datasets) {
             if (dataset.isDirty()) {
@@ -61,9 +66,20 @@ public class Plot {
             this.datasets.add(data);
         }
 
+        // If frozen scale, don't add data that's out of the range
+        if (settings.containsKey(Setting.freeze_y_scale)) {
+            if (! inDataYRange(y) ) {
+                return data;
+            }
+        }
+
         data.add(x, y);
         updateDataBoundsWith(data);
         return data;
+    }
+
+    private boolean inDataYRange(double y) {
+        return (this.dataMinY <= y && y <= this.dataMaxY);
     }
 
     public PlotData plot(double x, double y) {
