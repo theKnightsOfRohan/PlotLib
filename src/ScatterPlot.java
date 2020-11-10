@@ -5,18 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-public class Plot {
+public class ScatterPlot {
     public enum Setting {
         show_axes, freeze_y_scale, freeze_x_scale, show_border
     }
 
-    private int cornerX, cornerY, width, height;
-    private ArrayList<PlotData> datasets;
-    private HashMap<Setting, Boolean> settings;
-    private double dataMinX, dataMinY, dataMaxX, dataMaxY;
-    private boolean needScaling = true;
+    protected int cornerX, cornerY, width, height;
+    protected ArrayList<PlotData> datasets;
+    protected HashMap<Setting, Boolean> settings;
+    protected double dataMinX, dataMinY, dataMaxX, dataMaxY;
+    protected boolean needScaling = true;
 
-    public Plot(int cornerX, int cornerY, int w, int h) {
+    public ScatterPlot(int cornerX, int cornerY, int w, int h) {
         this.cornerX = cornerX;
         this.cornerY = cornerY;
         this.width = w;
@@ -59,6 +59,7 @@ public class Plot {
 
     public PlotData plot(int index, double x, double y) {
         PlotData data;
+
         if (index >= 0 && index < datasets.size()) {
             data = datasets.get(index);
         } else {
@@ -109,6 +110,7 @@ public class Plot {
     private void plotPoints(PApplet window) {
         if (needScaling) reScaleData(window);
 
+        // TODO: remove data that's out of range if plot frozen?
         for (PlotData dataset : datasets) {
             plotDataSet(window, dataset);
         }
