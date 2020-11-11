@@ -90,7 +90,8 @@ public abstract class Plot {
     }
 
     protected void plotDataSet(PApplet window, PlotData dataset) {
-        dataset.rescale(cornerX, cornerX + width, cornerY + height, cornerY);
+        dataset.rescale(cornerX, cornerX + width, cornerY + height, cornerY,
+                this.dataMinX, this.dataMaxX, this.dataMinY, this.dataMaxY);
 
         // TODO: refactor so datasets draw themselves...?
         window.fill(dataset.getFillColor());
@@ -152,6 +153,11 @@ public abstract class Plot {
 
     public double getDataYFor(double screenY) {
         return Plot.map(screenY, cornerY + height, cornerY, dataMinY, dataMaxY);  // TODO: use getters for this
+    }
+
+    public void removePlot(int plotIndex) {
+        // TODO: bounds check
+        this.datasets.remove(plotIndex);
     }
 
     public enum Setting {
