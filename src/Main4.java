@@ -1,7 +1,7 @@
 import processing.core.PApplet;
 
-public class Main2 extends PApplet {
-    ScatterPlot plt;         // TODO: add ability to be fixed size; new points bump off old points
+public class Main4 extends PApplet {
+    Plot plt;         // TODO: add ability to be fixed size; new points bump off old points
     int time = 0;
 
     public void settings() {
@@ -9,7 +9,7 @@ public class Main2 extends PApplet {
     }
 
     public void setup() {
-        plt = new ScatterPlot(100, 100, 600, 600);
+        plt = new TimeSeriesPlot(100, 100, 600, 600, 200);
 
         plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
         plt.set(ScatterPlot.Setting.show_border, true);
@@ -18,16 +18,14 @@ public class Main2 extends PApplet {
     public void draw() {
         background(255);
 
-        if (mousePressed) {
-            plt.plot(0, time, mouseX).strokeColor("red").style("-");
-            plt.plot(1, time, mouseY).strokeColor("green").style("-");
-            time++;
-        }
+        plt.plot(0, time, mouseX).strokeColor("red").style("-");
+        plt.plot(1, time, mouseY).strokeColor("green").style("-");
+        time++;
 
         plt.draw(this);
     }
 
     public static void main(String[] args) {
-        PApplet.main("Main2");
+        PApplet.main("Main4");
     }
 }

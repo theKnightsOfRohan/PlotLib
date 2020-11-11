@@ -3,18 +3,18 @@ import processing.core.PApplet;
 public class Main3 extends PApplet {
     Plot plt;         // TODO: add ability to be fixed size; new points bump off old points
     int time = 0;
-    double yVal = 400;
+    double yVal = 380;
 
     public void settings() {
         size(800, 800);
     }
 
     public void setup() {
-        plt = new Plot(0, 0, 200, 200);
-
-        plt.set(Plot.Setting.show_axes, true);      // TODO: make a nice api for this
-        plt.set(Plot.Setting.show_border, true);
-        plt.set(Plot.Setting.freeze_y_scale, true);
+        plt = new TimeSeriesPlot(0, 0, 200, 200, 100);
+        plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
+        plt.set(ScatterPlot.Setting.show_border, true);
+        //plt.set(ScatterPlot.Setting.freeze_y_scale, true);
+        //plt.setYDataRange(0, 400);
     }
 
     public void draw() {
