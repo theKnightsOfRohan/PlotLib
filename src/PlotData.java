@@ -37,6 +37,25 @@ public class PlotData {
         }
     }
 
+    public void remove(int index) {
+        // TODO: check if index is in bounds
+        x.remove(index);
+        y.remove(index);
+    }
+
+    public void setDataMinX(double dataMinX) {
+        this.minX = dataMinX;
+    }
+
+    public void setDataMaxX(double dataMaxX) {
+        this.maxX = dataMaxX;
+    }
+
+    public double getDataX(int i) {
+        // TODO: range check
+        return x.get(i);
+    }
+
     public void add(double new_x, double new_y) {
         x.add(new_x);
         y.add(new_y);
@@ -96,13 +115,14 @@ public class PlotData {
      * @param displayMinY
      * @param displayMaxY
      */
-    public void rescale(double displayMinX, double displayMaxX, double displayMinY, double displayMaxY) {
+    public void rescale(double displayMinX, double displayMaxX, double displayMinY, double displayMaxY,
+                        double dataMinX, double dataMaxX, double dataMinY, double dataMaxY) {
         pixelX.clear();
         pixelY.clear();
 
         for (int i = 0; i < size(); i++) {
-            pixelX.add((int) Plot.map(x.get(i), minX, maxX, displayMinX, displayMaxX));
-            pixelY.add((int) Plot.map(y.get(i), minY, maxY, displayMinY, displayMaxY));
+            pixelX.add((int) ScatterPlot.map(x.get(i), dataMinX, dataMaxX, displayMinX, displayMaxX));
+            pixelY.add((int) ScatterPlot.map(y.get(i), dataMinY, dataMaxY, displayMinY, displayMaxY));
         }
     }
 
