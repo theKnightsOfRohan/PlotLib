@@ -1,3 +1,5 @@
+package Plot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,7 +110,7 @@ public class PlotData {
     }
 
     /***
-     * Re-scale dataset to bounds given by parameters.  Used by Plot to transform data for display once and then
+     * Re-scale dataset to bounds given by parameters.  Used by Plot.Plot to transform data for display once and then
      * never again until updated.
      * @param displayMinX
      * @param displayMaxX
@@ -186,5 +188,13 @@ public class PlotData {
 
     public Style getStyle() {
         return this.style;
+    }
+
+    public List<Integer> getScreenXCoords() {
+        return this.pixelX;
+    }
+
+    public List<Integer> getScreenYCoords() {
+        return this.pixelY;
     }
 }

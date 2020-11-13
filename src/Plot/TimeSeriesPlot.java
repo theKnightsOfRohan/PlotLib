@@ -1,3 +1,5 @@
+package Plot;
+
 public class TimeSeriesPlot extends Plot {
     private int dataWidth;
 

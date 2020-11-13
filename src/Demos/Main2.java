@@ -1,3 +1,6 @@
+package Demos;
+
+import Plot.ScatterPlot;
 import processing.core.PApplet;
 
 public class Main2 extends PApplet {
@@ -28,6 +31,6 @@ public class Main2 extends PApplet {
     }
 
     public static void main(String[] args) {
-        PApplet.main("Main2");
+        PApplet.main("Demos.Main2");
     }
 }

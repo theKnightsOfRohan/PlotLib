@@ -1,9 +1,13 @@
+package Plot;
+
 import processing.core.PApplet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class Plot {
+    private static final int AXIS_STROKE_WEIGHT = 2;
     protected int cornerX;
     protected int cornerY;
     protected int width;
@@ -127,9 +131,11 @@ public abstract class Plot {
         if (settings.containsKey(Setting.show_axes)) {
             int axisX = (int) getScreenXFor(0);
             int axisY = (int) getScreenYFor(0);
+            window.strokeWeight(AXIS_STROKE_WEIGHT);
             window.stroke(0);
             window.line(cornerX, axisY, cornerX + width, axisY);
             window.line(axisX, cornerY, axisX, cornerY + height);
+            window.strokeWeight(1);
         }
 
         if (settings.containsKey(Setting.show_border)) {
@@ -158,6 +164,24 @@ public abstract class Plot {
     public void removePlot(int plotIndex) {
         // TODO: bounds check
         this.datasets.remove(plotIndex);
+    }
+
+    public void setYDataRangeMin(double dataYMin) {
+        this.dataMinY = dataYMin;
+    }
+
+    public List<Integer> getXScreenCoords(int dataIndex) {
+        // TODO: bounds check
+        PlotData dataset = this.datasets.get(dataIndex);
+
+        return dataset.getScreenXCoords();
+    }
+
+    public List<Integer> getYScreenCoords(int dataIndex) {
+        // TODO: bounds check
+        PlotData dataset = this.datasets.get(dataIndex);
+
+        return dataset.getScreenYCoords();
     }
 
     public enum Setting {
