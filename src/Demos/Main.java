@@ -12,7 +12,7 @@ public class Main extends PApplet {
     }
 
     public void setup() {
-        plt = new ScatterPlot(100, 100, 700, 700);
+        plt = new ScatterPlot(100, 100, 600, 600);
 
         double[] x = MathUtils.linspace( -2.0*Math.PI, 2.0*Math.PI, 1000);
         double[] y1 = MathUtils.apply(Math::sin, x);
