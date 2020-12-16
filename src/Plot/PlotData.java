@@ -3,20 +3,33 @@ package Plot;
 import java.util.ArrayList;
 import java.util.List;
 
+/***
+ * Object containing data and view info for one set within a plot.
+ */
 public class PlotData {
-    public enum Style { POINT, LINE }
+    public static enum Style { POINT, LINE }
     public static final int BLACK = 0xFF000000;
     public static final int RED = 0xFFFF0000;
     public static final int BLUE = 0xFF0000FF;
     public static final int GREEN = 0xFF00FF00;
 
-    private List<Double> x, y;
-    private List<Integer> pixelX, pixelY;  // display coords
-    private double minX, maxX, minY, maxY;  // for raw values in x, y
+    // ------ STYLE -------
     private int strokeColor, fillColor;
     private Style style;
-    private boolean dirty = false;
 
+    // ------ DATA --------
+    private List<Double> x, y;
+    private List<Integer> pixelX, pixelY;   // display coords (pre-calculated for speed
+                                            // TODO: re-factor this to be in Plot?
+
+    private double minX, maxX, minY, maxY;  // for raw values in x, y
+    private boolean dirty = false;          // has data changed without updating pre-calculated values?
+
+    /***
+     * Create PlotData object from pre-made data lists x and y
+     * @param x list of x coordinates
+     * @param y list of y coordinates
+     */
     public PlotData(List<Double> x, List<Double> y) {
         this.x = x;
         this.y = y;
@@ -29,35 +42,70 @@ public class PlotData {
         style = Style.POINT;
     }
 
+    /***
+     * Create PlotData object from pre-made data lists x and y
+     * @param x array of x coordinates
+     * @param y array of y coordinates
+     */
+    public PlotData(double[] x, double[] y) {
+        this(MathUtils.toList(x), MathUtils.toList(y));
+    }
+
+    /***
+     * Create new PlotData object with no data (can be added later with .plot(...) methods ).
+     */
     public PlotData() {
         this(new ArrayList<Double>(), new ArrayList<Double>());
     }
 
-    private void reCalculateBounds() {
-        for (int i = 0; i < size(); i++) {
-            updateBounds(x.get(i), y.get(i));
-        }
-    }
-
+    /***
+     * Remove (x, y) coordinates at index index
+     * @param index the index to remove (x, y) coordinates from the plot
+     */
     public void remove(int index) {
-        // TODO: check if index is in bounds
+        if (!isInBounds(index)) return;
         x.remove(index);
         y.remove(index);
     }
 
+    private boolean isInBounds(int index) {
+        return index >= 0 && index < x.size();
+    }
+
+    /***
+     * Set the minimum x value to include in the plot (does not need to be a data point)
+     * @param dataMinX the value to set the minimum display to
+     */
     public void setDataMinX(double dataMinX) {
         this.minX = dataMinX;
     }
 
+    /***
+     * Set the maximum x value to include in the plot (does not need to be a data point)
+     * @param dataMaxX the value to set the maximum display to
+     */
     public void setDataMaxX(double dataMaxX) {
         this.maxX = dataMaxX;
     }
 
+    /***
+     * Get the x coordinate of raw data (not pixel value) at index i
+     * @param i
+     * @return
+     */
     public double getDataX(int i) {
-        // TODO: range check
+        if (!isInBounds(i)) {
+            System.err.println("Index " + i + " is out of bounds");
+            return 0;
+        }
         return x.get(i);
     }
 
+    /***
+     * Add a new set of data coordinates to the plot
+     * @param new_x new x value
+     * @param new_y new y value
+     */
     public void add(double new_x, double new_y) {
         x.add(new_x);
         y.add(new_y);
@@ -66,6 +114,11 @@ public class PlotData {
         dirty = true;   // so parent can re-calculate bounds if desired.
     }
 
+    /***
+     * Update the min and max values to reflect a new set of data points
+     * @param new_x
+     * @param new_y
+     */
     private void updateBounds(double new_x, double new_y) {
         if (new_x < minX) {
             minX = new_x;
@@ -129,15 +182,16 @@ public class PlotData {
     }
 
     public PlotData fillColor(String color) {
-        this.fillColor = getValFor(color);
+        this.fillColor = getColorValFor(color);
         return this;
     }
 
     public PlotData strokeColor(String color) {
-        this.strokeColor = getValFor(color);
+        this.strokeColor = getColorValFor(color);
         return this;
     }
 
+    // TODO: add dashed-line style
     public PlotData style(String style) {
         if (style.equals(".")) {
             this.style = Style.POINT;
@@ -147,7 +201,7 @@ public class PlotData {
         return this;
     }
 
-    private int getValFor(String color) {
+    private int getColorValFor(String color) {
         if (color.equals("red")) {
             return RED;
         } else if (color.equals("blue")) {
@@ -196,5 +250,14 @@ public class PlotData {
 
     public List<Integer> getScreenYCoords() {
         return this.pixelY;
+    }
+
+    /***
+     * Re-calculate min and max data values by looping over all existing data
+     */
+    private void reCalculateBounds() {
+        for (int i = 0; i < size(); i++) {
+            updateBounds(x.get(i), y.get(i));
+        }
     }
 }

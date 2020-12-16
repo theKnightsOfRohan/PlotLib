@@ -8,12 +8,16 @@ import java.util.List;
 
 public abstract class Plot {
     private static final int AXIS_STROKE_WEIGHT = 2;
+
+    // ---- STYLE ----
     protected int cornerX;
     protected int cornerY;
     protected int width;
     protected int height;
-    protected ArrayList<PlotData> datasets;
     protected HashMap<Setting, Boolean> settings;
+
+    // ---- DATA ----
+    protected ArrayList<PlotData> datasets;
     protected double dataMinX;
     protected double dataMinY;
     protected double dataMaxX;
