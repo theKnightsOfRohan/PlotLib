@@ -15,7 +15,7 @@ public class Main3 extends PApplet {
     }
 
     public void setup() {
-        plt = new TimeSeriesPlot(0, 0, 200, 200, 100);
+        plt = new TimeSeriesPlot(0, 0, 800, 400, 100);
         plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
         plt.set(ScatterPlot.Setting.show_border, true);
         //plt.set(Plot.ScatterPlot.Setting.freeze_y_scale, true);

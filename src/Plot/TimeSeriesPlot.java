@@ -3,9 +3,9 @@ package Plot;
 public class TimeSeriesPlot extends Plot {
     private int dataWidth;
 
-    public TimeSeriesPlot(int cornerX, int cornerY, int w, int h, int width) {
-        super(cornerX, cornerY, w, h);
-        this.dataWidth = width;
+    public TimeSeriesPlot(int x1, int y1, int x2, int y2, int dataPointWidth) {
+        super(x1, y1, x2, y2);
+        this.dataWidth = dataPointWidth;
     }
 
     @Override

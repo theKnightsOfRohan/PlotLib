@@ -12,7 +12,7 @@ public class Main2 extends PApplet {
     }
 
     public void setup() {
-        plt = new ScatterPlot(100, 100, 600, 600);
+        plt = new ScatterPlot(100, 100, 700, 700);
 
         plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
         plt.set(ScatterPlot.Setting.show_border, true);

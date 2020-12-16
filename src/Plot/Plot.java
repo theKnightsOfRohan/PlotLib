@@ -24,11 +24,25 @@ public abstract class Plot {
     protected double dataMaxY;
     protected boolean needScaling = true;
 
-    public Plot(int cornerX, int cornerY, int w, int h) {
-        this.cornerX = cornerX;
-        this.cornerY = cornerY;
-        this.width = w;
-        this.height = h;
+    /***
+     * Create a plot from upper-left corner (x1, y1) to lower right corner (x2, y2)
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     */
+    public Plot(int x1, int y1, int x2, int y2) {
+        if (x2 <= x1) {
+            System.err.println("x1 must be smaller than x2");
+        }
+        if (y2 <= y1) {
+            System.err.println("y1 must be smaller than y2");
+        }
+
+        this.cornerX = x1;
+        this.cornerY = y1;
+        this.width = x2-x1;
+        this.height = y2-y1;
         this.datasets = new ArrayList<>();
         settings = new HashMap<Setting, Boolean>();
     }

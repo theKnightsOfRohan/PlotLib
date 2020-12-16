@@ -4,8 +4,8 @@ import java.util.List;
 
 public class ScatterPlot extends Plot {
 
-    public ScatterPlot(int cornerX, int cornerY, int w, int h) {
-        super(cornerX, cornerY, w, h);
+    public ScatterPlot(int x1, int y1, int x2, int y2) {
+        super(x1, y1, x2, y2);
     }
 
     public PlotData plot(double[] xData, double[] yData) {
