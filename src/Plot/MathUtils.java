@@ -56,6 +56,14 @@ public class MathUtils {
         return DoubleStream.of(arr).boxed().collect(Collectors.toList());
     }
 
+    public static double ceilToNearest(double val, double M) {
+        return Math.ceil(val/M)*M;
+    }
+
+    public static double roundToNearest(double val, double M) {
+        return Math.round(val/M)*M;
+    }
+
     // TODO: make overloaded version of toList for int[]
     // TODO: make overloaded version of toList for float[]  (because processing uses float)
 }
