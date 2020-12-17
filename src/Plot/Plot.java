@@ -15,6 +15,7 @@ public abstract class Plot {
     protected int width;
     protected int height;
     protected HashMap<Setting, Boolean> settings;
+    protected Axes axes;
 
     // ---- DATA ----
     protected ArrayList<PlotData> datasets;
@@ -45,6 +46,7 @@ public abstract class Plot {
         this.height = y2-y1;
         this.datasets = new ArrayList<>();
         settings = new HashMap<Setting, Boolean>();
+        this.axes = new Axes();
     }
 
     public static double map(double target, double low1, double high1, double low2, double high2) {
@@ -69,7 +71,22 @@ public abstract class Plot {
         }
 
         drawAxes(window);
-        plotPoints(window);
+        drawDataPoints(window);
+    }
+
+    private void reScaleFromData() {
+        if (datasets.size() == 0) return;
+        dataMinX = 0;
+        dataMinY = 0;
+        dataMaxX = 0;
+        dataMaxY = 0;
+
+        for (PlotData dataset : datasets) {
+            updateDataBoundsWith(dataset);
+            dataset.setClean();
+        }
+
+        needScaling = false;
     }
 
     public abstract PlotData plot(int index, double x, double y);
@@ -102,7 +119,7 @@ public abstract class Plot {
         if (data.getDataMaxY() > dataMaxY) dataMaxY = data.getDataMaxY();
     }
 
-    protected void plotPoints(PApplet window) {
+    protected void drawDataPoints(PApplet window) {
         if (needScaling) reScaleData(window);
 
         // TODO: remove data that's out of range if plot frozen?
@@ -161,6 +178,8 @@ public abstract class Plot {
             window.stroke(PlotData.BLACK);
             window.rect(cornerX, cornerY, width, height);
         }
+
+        axes.draw(window);
     }
 
     public double getScreenXFor(double dataX) {
@@ -205,4 +224,85 @@ public abstract class Plot {
     public enum Setting {
         show_axes, freeze_y_scale, freeze_x_scale, show_border
     }
+
+    protected class Axes {
+        private static final int MIN_PIXEL_SPACING = 50;
+
+        protected int numXLines, numYLines;
+        protected double xScale, yScale;
+
+        protected void draw(PApplet window) {
+            if (getDomain() == 0 || getRange() == 0) return;
+
+            numXLines = (width/MIN_PIXEL_SPACING);
+            numYLines = (height/MIN_PIXEL_SPACING);
+
+            xScale = calcScale(dataMinX, dataMaxX, numXLines);
+            yScale = calcScale(dataMinY, dataMaxY, numYLines);
+
+            double startX = MathUtils.ceilToNearest(dataMinX, xScale);
+            double val = startX;
+            double x = getScreenXFor(val);
+            int i = 0;
+            while (x <= cornerX + width) {
+                window.line((float)x, cornerY, (float)x, cornerY+height);
+                window.textSize(10);
+                window.textAlign(window.CENTER, window.CENTER);
+                window.fill(0);
+                window.stroke(0);
+                window.text(""+val, (float)x, cornerY + height - 12);
+
+                i++;
+                val = startX + i*xScale;
+                x = getScreenXFor(val);
+            }
+
+            double startY = MathUtils.ceilToNearest(dataMinY, yScale);
+            val = startY + yScale;
+            double y = getScreenYFor(val);
+            i = 0;
+            while (y >= cornerY) {
+                window.line(cornerX, (float)y, cornerX+width, (float)y);
+                window.textSize(10);
+                window.textAlign(window.CENTER, window.CENTER);
+                window.fill(0);
+                window.stroke(0);
+                window.text(""+val, cornerX - 12, (float)y);
+
+                i++;
+                val = startY + i*yScale;
+                y = getScreenYFor(val);
+            }
+        }
+    }
+
+    private double getRange() {
+        return dataMaxY- dataMinY;
+    }
+
+    private double getDomain() {
+        return dataMaxX - dataMinX;
+    }
+
+    protected static double calcScale(double minVal, double maxVal, int numIntervals){
+        double[] scale = { 1, 2, 5 };
+
+        double in = (maxVal-minVal)/numIntervals;
+        int count = 0;
+        while ( in > scale[ scale.length - 1] ) {
+            count++;
+            in /= 10;
+        }
+
+        while ( in <= scale[ scale.length - 1]/10 ) {
+            count--;
+            in *= 10;
+        }
+
+        int scaleIndex = 0;
+        while ( in > scale[scaleIndex] ) scaleIndex++;
+
+        return scale[scaleIndex]*Math.pow(10, count);
+    }
+
 }
