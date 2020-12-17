@@ -8,7 +8,28 @@ public class TimeSeriesPlot extends Plot {
         this.dataWidth = dataPointWidth;
     }
 
-    @Override
+    /***
+     * Add data (x, y) to last dataset.
+     * @param x
+     * @param y
+     * @return
+     */
+    public PlotData plot(double x, double y) {
+        if (datasets.size() == 0) {
+            return plot(0, x, y);
+        } else {
+            return plot( datasets.size()-1, x, y);
+        }
+    }
+
+    /***
+     * Add data point (x, y) to dataset index.  If index is invalid a new dataset is created.
+     * Note: if freeze_y_scale setting is true and point is out of range it won't be added.
+     * @param index
+     * @param x
+     * @param y
+     * @return
+     */
     public PlotData plot(int index, double x, double y) {
         PlotData data;
 
@@ -21,7 +42,7 @@ public class TimeSeriesPlot extends Plot {
 
         // If frozen scale, don't add data that's out of the range
         if (settings.containsKey(Setting.freeze_y_scale)) {
-            if (! inDataYRange(y) ) {
+            if (! inDataYRange(y) ) {           // TODO: print warning if verbose mode on
                 return data;
             }
         }
