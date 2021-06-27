@@ -225,6 +225,11 @@ public abstract class Plot {
         show_axes, freeze_y_scale, freeze_x_scale, show_border
     }
 
+
+    // TODO: refactor so cleaner
+    // TODO: fix number rounding display problem
+    // TDOO: add minor grid lines
+    // TODO: organize all features so easy to turn on and off
     protected class Axes {
         private static final int MIN_PIXEL_SPACING = 50;
 
@@ -240,6 +245,7 @@ public abstract class Plot {
             xScale = calcScale(dataMinX, dataMaxX, numXLines);
             yScale = calcScale(dataMinY, dataMaxY, numYLines);
 
+            // --------------- draw major x grid -----------------------------------------
             double startX = MathUtils.ceilToNearest(dataMinX, xScale);
             double val = startX;
             double x = getScreenXFor(val);
@@ -257,6 +263,17 @@ public abstract class Plot {
                 x = getScreenXFor(val);
             }
 
+            // -------------- draw minor grid -----------------------------------
+/*            double xMinorScale = getMinorScale(xScale);
+            while (x >= cornerX) {
+                window.stroke(127);
+                window.line((float)x, cornerY, (float)x, cornerY+height);
+
+                i--;
+                val = startX + i*xMinorScale;
+                x = getScreenXFor(val);
+            }*/
+
             double startY = MathUtils.ceilToNearest(dataMinY, yScale);
             val = startY + yScale;
             double y = getScreenYFor(val);
@@ -273,6 +290,11 @@ public abstract class Plot {
                 val = startY + i*yScale;
                 y = getScreenYFor(val);
             }
+        }
+
+        private double getMinorScale(double xScale) {
+            if ((""+xScale).endsWith("2")) return xScale/4;
+            return xScale/5;
         }
     }
 
