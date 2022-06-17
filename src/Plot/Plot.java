@@ -223,13 +223,22 @@ public abstract class Plot {
         return dataset.getScreenYCoords();
     }
 
+    public void setTextSize(int xAxisTextSize, int yAxisTextSize) {
+        axes.xAxisTextSize = xAxisTextSize;
+        axes.yAxisTextSize = yAxisTextSize;
+    }
+
+    public void setTextSize(int textSize) {
+        axes.xAxisTextSize = textSize;
+        axes.yAxisTextSize = textSize;
+    }
+
     public enum Setting {
         show_axes, freeze_y_scale, freeze_x_scale, show_border
     }
 
 
     // TODO: refactor so cleaner
-    // TODO: fix number rounding display problem
     // TDOO: add minor grid lines
     // TODO: organize all features so easy to turn on and off
     protected class Axes {
@@ -238,6 +247,9 @@ public abstract class Plot {
         protected int numXLines, numYLines;
         protected double xScale, yScale;
         protected int xScaleSigFigs, yScaleSigFigs;
+
+        protected int xAxisTextSize = 10;
+        protected int yAxisTextSize = 10;
 
         protected void draw(PApplet window) {
             if (getDomain() == 0 || getRange() == 0) return;
@@ -260,12 +272,12 @@ public abstract class Plot {
             int i = 0;
             while (x <= cornerX + width) {
                 window.line((float)x, cornerY, (float)x, cornerY+height);
-                window.textSize(10);
+                window.textSize(xAxisTextSize);
                 window.textAlign(window.CENTER, window.CENTER);
                 window.fill(0);
                 window.stroke(0);
                 String value = String.format("%."+ this.xScaleSigFigs + "f", val);
-                window.text(value, (float)x, cornerY + height - 12);
+                window.text(value, (float)x, getBottomY() - 12);
 
                 i++;
                 val = startX + i*xScale;
@@ -289,7 +301,7 @@ public abstract class Plot {
             i = 0;
             while (y >= cornerY) {
                 window.line(cornerX, (float)y, cornerX+width, (float)y);
-                window.textSize(10);
+                window.textSize(yAxisTextSize);
                 window.textAlign(window.CENTER, window.CENTER);
                 window.fill(0);
                 window.stroke(0);
@@ -307,6 +319,22 @@ public abstract class Plot {
             if ((""+xScale).endsWith("2")) return xScale/4;
             return xScale/5;
         }
+    }
+
+    public float getBottomY() {
+        return cornerY + height;
+    }
+
+    public float getTopY() {
+        return cornerY;
+    }
+
+    public float getLeftX() {
+        return cornerX;
+    }
+
+    public float getRightX() {
+        return cornerX + width;
     }
 
     private double getRange() {
