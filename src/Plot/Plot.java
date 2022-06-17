@@ -154,6 +154,7 @@ public abstract class Plot {
 
     protected void reScaleData(PApplet window) {
         System.err.println("Warning: call to reScaleData is currently unimplemented");
+        this.needScaling = false;
     }
 
     protected void printDebugInfo() {
