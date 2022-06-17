@@ -16,6 +16,7 @@ public class Main2 extends PApplet {
 
         plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
         plt.set(ScatterPlot.Setting.show_border, true);
+        plt.setTextSize(30);
     }
 
     public void draw() {

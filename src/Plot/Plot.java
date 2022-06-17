@@ -1,6 +1,7 @@
 package Plot;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -233,6 +234,14 @@ public abstract class Plot {
         axes.yAxisTextSize = textSize;
     }
 
+    public void setXAxisTextYAdjustement(float amt) {
+        this.axes.xAxisTextYAdjust = amt;
+    }
+
+    public void setYAxisTextXAdjustment(float amt) {
+        this.axes.yAxisTextXAdjust = amt;
+    }
+
     public enum Setting {
         show_axes, freeze_y_scale, freeze_x_scale, show_border
     }
@@ -243,6 +252,7 @@ public abstract class Plot {
     // TODO: organize all features so easy to turn on and off
     protected class Axes {
         private static final int MIN_PIXEL_SPACING = 50;
+        public float yAxisTextXAdjust, xAxisTextYAdjust;
 
         protected int numXLines, numYLines;
         protected double xScale, yScale;
@@ -254,15 +264,15 @@ public abstract class Plot {
         protected void draw(PApplet window) {
             if (getDomain() == 0 || getRange() == 0) return;
 
-            numXLines = (width/MIN_PIXEL_SPACING);
-            numYLines = (height/MIN_PIXEL_SPACING);
+            numXLines = (width / MIN_PIXEL_SPACING);
+            numYLines = (height / MIN_PIXEL_SPACING);
 
             double[] xScaleInfo = calcScale(dataMinX, dataMaxX, numXLines);
             double[] yScaleInfo = calcScale(dataMinY, dataMaxY, numYLines);
             this.xScale = xScaleInfo[0];
             this.yScale = yScaleInfo[0];
-            this.xScaleSigFigs = Math.max(0, -(int)xScaleInfo[1]); // 2 decimals is 10^(-2).  -2 --> 2
-            this.yScaleSigFigs = Math.max(0, -(int)yScaleInfo[1]); // no decimals might be 10^(2).  2 --> -2, but max to 0
+            this.xScaleSigFigs = Math.max(0, -(int) xScaleInfo[1]); // 2 decimals is 10^(-2).  -2 --> 2
+            this.yScaleSigFigs = Math.max(0, -(int) yScaleInfo[1]); // no decimals might be 10^(2).  2 --> -2, but max to 0
 
             // --------------- draw major x grid -----------------------------------------
             double startX = MathUtils.ceilToNearest(dataMinX, xScale);
@@ -271,16 +281,17 @@ public abstract class Plot {
             double x = getScreenXFor(val);
             int i = 0;
             while (x <= cornerX + width) {
-                window.line((float)x, cornerY, (float)x, cornerY+height);
+                window.line((float) x, cornerY, (float) x, cornerY + height);
                 window.textSize(xAxisTextSize);
                 window.textAlign(window.CENTER, window.CENTER);
                 window.fill(0);
                 window.stroke(0);
-                String value = String.format("%."+ this.xScaleSigFigs + "f", val);
-                window.text(value, (float)x, getBottomY() - 12);
+                String value = String.format("%." + this.xScaleSigFigs + "f", val);
+                window.textAlign(PConstants.CENTER);
+                window.text(value, (float) x, getBottomY() + xAxisTextSize + getXAxisTextYAdjust());
 
                 i++;
-                val = startX + i*xScale;
+                val = startX + i * xScale;
                 x = getScreenXFor(val);
             }
 
@@ -300,17 +311,18 @@ public abstract class Plot {
             double y = getScreenYFor(val);
             i = 0;
             while (y >= cornerY) {
-                window.line(cornerX, (float)y, cornerX+width, (float)y);
+                window.line(cornerX, (float) y, cornerX + width, (float) y);
                 window.textSize(yAxisTextSize);
                 window.textAlign(window.CENTER, window.CENTER);
                 window.fill(0);
                 window.stroke(0);
 
-                String value = String.format("%."+ this.yScaleSigFigs + "f", val);
-                window.text(value, cornerX - 12, (float)y);
+                String value = String.format("%." + this.yScaleSigFigs + "f", val);
+                window.textAlign(PConstants.RIGHT);
+                window.text(value, getLeftX() + - yAxisTextXAdjust/2 + getYAxisTextXAdjust(), (float) y);
 
                 i++;
-                val = startY + i*yScale;
+                val = startY + i * yScale;
                 y = getScreenYFor(val);
             }
         }
@@ -319,6 +331,14 @@ public abstract class Plot {
             if ((""+xScale).endsWith("2")) return xScale/4;
             return xScale/5;
         }
+    }
+
+    private float getXAxisTextYAdjust() {
+        return this.axes.xAxisTextYAdjust;
+    }
+
+    public float getYAxisTextXAdjust() {
+        return this.axes.yAxisTextXAdjust;
     }
 
     public float getBottomY() {
