@@ -27,10 +27,10 @@ public abstract class Plot {
 
     /***
      * Create a plot from upper-left corner (x1, y1) to lower right corner (x2, y2)
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
+     * @param x1 x coord of upper left corner
+     * @param y1 y coord of upper left corner
+     * @param x2 x coord of lower right corner
+     * @param y2 y coord of lower right corner
      */
     public Plot(int x1, int y1, int x2, int y2) {
         if (x2 <= x1) {
