@@ -7,7 +7,8 @@ import java.util.List;
  * Object containing data and view info for one set within a plot.
  */
 public class PlotData {
-    public static enum Style { POINT, LINE }
+    public static enum Style {POINT, LINE}
+
     public static final int BLACK = 0xFF000000;
     public static final int RED = 0xFFFF0000;
     public static final int BLUE = 0xFF0000FF;
@@ -15,12 +16,14 @@ public class PlotData {
 
     // ------ STYLE -------
     private int strokeColor, fillColor;
+    private float strokeWeight;
     private Style style;
+
 
     // ------ DATA --------
     private List<Double> x, y;
     private List<Integer> pixelX, pixelY;   // display coords (pre-calculated for speed
-                                            // TODO: re-factor this to be in Plot?
+    // TODO: re-factor this to be in Plot?
 
     private double minX, maxX, minY, maxY;  // for raw values in x, y
     private boolean dirty = false;          // has data changed without updating pre-calculated values?
@@ -40,6 +43,7 @@ public class PlotData {
         strokeColor = BLACK;
         fillColor = BLACK;
         style = Style.POINT;
+        strokeWeight = 1;
     }
 
     /***
@@ -134,14 +138,6 @@ public class PlotData {
         }
     }
 
-    public void setFillColor(int color) {
-        this.fillColor = color;
-    }
-
-    public void setStrokeColor(int color) {
-        this.strokeColor = color;
-    }
-
     public int size() {
         return x.size();
     }
@@ -188,6 +184,11 @@ public class PlotData {
 
     public PlotData strokeColor(String color) {
         this.strokeColor = getColorValFor(color);
+        return this;
+    }
+
+    public PlotData strokeWeight(int weight) {
+        this.strokeWeight = weight;
         return this;
     }
 
@@ -242,6 +243,10 @@ public class PlotData {
 
     public Style getStyle() {
         return this.style;
+    }
+
+    public float getStrokeWeight() {
+        return this.strokeWeight;
     }
 
     public List<Integer> getScreenXCoords() {

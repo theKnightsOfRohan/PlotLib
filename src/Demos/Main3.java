@@ -25,7 +25,7 @@ public class Main3 extends PApplet {
     public void draw() {
         background(255);
 
-        plt.plot(1, time, yVal).strokeColor("green").style("-");
+        plt.plot(1, time, yVal).strokeColor("green").style(".").strokeWeight(10);
         time++;
 
         yVal += -3 + Math.random()*6;

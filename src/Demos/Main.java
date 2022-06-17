@@ -21,8 +21,8 @@ public class Main extends PApplet {
         plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
         plt.set(ScatterPlot.Setting.show_border, true);
 
-        plt.plot(x, y1).fillColor("red").strokeColor("red").style("-");
-        plt.plot(x, y2).fillColor("blue").strokeColor("blue").style("-");
+        plt.plot(x, y1).fillColor("red").strokeWeight(5).strokeColor("red").style("-");
+        plt.plot(x, y2).fillColor("blue").strokeWeight(5).strokeColor("blue").style("-");
     }
 
     public void draw() {

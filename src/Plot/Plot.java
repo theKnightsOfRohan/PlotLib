@@ -135,6 +135,7 @@ public abstract class Plot {
         // TODO: refactor so datasets draw themselves...?
         window.fill(dataset.getFillColor());
         window.stroke(dataset.getStrokeColor());
+        window.strokeWeight(dataset.getStrokeWeight());
 
         if (dataset.getStyle() == PlotData.Style.POINT) {
             for (int i = 0; i < dataset.size(); i++) {
