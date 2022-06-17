@@ -237,6 +237,7 @@ public abstract class Plot {
 
         protected int numXLines, numYLines;
         protected double xScale, yScale;
+        protected int xScaleSigFigs, yScaleSigFigs;
 
         protected void draw(PApplet window) {
             if (getDomain() == 0 || getRange() == 0) return;
@@ -244,11 +245,16 @@ public abstract class Plot {
             numXLines = (width/MIN_PIXEL_SPACING);
             numYLines = (height/MIN_PIXEL_SPACING);
 
-            xScale = calcScale(dataMinX, dataMaxX, numXLines);
-            yScale = calcScale(dataMinY, dataMaxY, numYLines);
+            double[] xScaleInfo = calcScale(dataMinX, dataMaxX, numXLines);
+            double[] yScaleInfo = calcScale(dataMinY, dataMaxY, numYLines);
+            this.xScale = xScaleInfo[0];
+            this.yScale = yScaleInfo[0];
+            this.xScaleSigFigs = Math.max(0, -(int)xScaleInfo[1]); // 2 decimals is 10^(-2).  -2 --> 2
+            this.yScaleSigFigs = Math.max(0, -(int)yScaleInfo[1]); // no decimals might be 10^(2).  2 --> -2, but max to 0
 
             // --------------- draw major x grid -----------------------------------------
             double startX = MathUtils.ceilToNearest(dataMinX, xScale);
+
             double val = startX;
             double x = getScreenXFor(val);
             int i = 0;
@@ -258,7 +264,8 @@ public abstract class Plot {
                 window.textAlign(window.CENTER, window.CENTER);
                 window.fill(0);
                 window.stroke(0);
-                window.text(""+val, (float)x, cornerY + height - 12);
+                String value = String.format("%."+ this.xScaleSigFigs + "f", val);
+                window.text(value, (float)x, cornerY + height - 12);
 
                 i++;
                 val = startX + i*xScale;
@@ -286,7 +293,9 @@ public abstract class Plot {
                 window.textAlign(window.CENTER, window.CENTER);
                 window.fill(0);
                 window.stroke(0);
-                window.text(""+val, cornerX - 12, (float)y);
+
+                String value = String.format("%."+ this.yScaleSigFigs + "f", val);
+                window.text(value, cornerX - 12, (float)y);
 
                 i++;
                 val = startY + i*yScale;
@@ -308,7 +317,7 @@ public abstract class Plot {
         return dataMaxX - dataMinX;
     }
 
-    protected static double calcScale(double minVal, double maxVal, int numIntervals){
+    protected static double[] calcScale(double minVal, double maxVal, int numIntervals){
         double[] scale = { 1, 2, 5 };
 
         double in = (maxVal-minVal)/numIntervals;
@@ -326,7 +335,7 @@ public abstract class Plot {
         int scaleIndex = 0;
         while ( in > scale[scaleIndex] ) scaleIndex++;
 
-        return scale[scaleIndex]*Math.pow(10, count);
+        return new double[] {scale[scaleIndex]*Math.pow(10, count), count};
     }
 
 }
