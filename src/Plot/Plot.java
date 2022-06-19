@@ -136,15 +136,11 @@ public abstract class Plot {
     }
 
     public void zoomViewTo(double minX, double minY, double maxX, double maxY) {
-        debugPrintCurrentDataView();
-
         this.overrideDataView = true;
         this.dataViewMinX = minX;
         this.dataViewMinY = minY;
         this.dataViewMaxX = maxX;
         this.dataViewMaxY = maxY;
-
-        debugPrintCurrentDataView();
     }
 
     private void debugPrintCurrentDataView() {

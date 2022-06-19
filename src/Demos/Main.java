@@ -34,14 +34,12 @@ public class Main extends PApplet {
 
         if (mousePressed && keyPressed && key == CODED && keyCode == CONTROL) {
             plt.zoomIn(0.01, 0.05, mouseX, mouseY);
-            System.out.println("Zooming in ");
         }
     }
 
     public void mousePressed() {
         if (plt.containsMouse(this) && !keyPressed) {
             startClick = new PVector(mouseX, mouseY);
-            System.out.println("Mouse pressed");
         }
 
         if (mouseButton == RIGHT) {
@@ -59,7 +57,6 @@ public class Main extends PApplet {
     public void mouseReleased() {
         if (plt.containsMouse(this) && startClick != null) {
             endClick = new PVector(mouseX, mouseY);
-            System.out.printf("Mouse released, zooming");
             plt.zoomViewToScreenCoordinates(startClick.x, startClick.y, endClick.x, endClick.y);
         }
         startClick = null;
