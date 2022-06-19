@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public abstract class Plot {
-    private static final int AXIS_STROKE_WEIGHT = 2;
     private static final float MIN_X_ZOOM_THRESHOLD = 50;
     private static final float MIN_Y_ZOOM_THRESHOLD = 50;
 
     // ---- STYLE ----
+    private static final int AXIS_STROKE_WEIGHT = 2;
     protected int cornerX;
     protected int cornerY;
     protected int width;
@@ -404,8 +404,8 @@ public abstract class Plot {
                 window.fill(0);
                 window.stroke(0);
                 String value = String.format("%." + this.xScaleSigFigs + "f", val);
-                window.textAlign(PConstants.CENTER);
-                window.text(value, (float) x, getBottomY() + xAxisTextSize + getXAxisTextYAdjust());
+                window.textAlign(PConstants.LEFT);
+                window.text(value, (float) x - getCenterShiftAmount(window, value), getBottomY() + xAxisTextSize + getXAxisTextYAdjust());
 
                 i++;
                 val = startX + i * xScale;
@@ -442,6 +442,12 @@ public abstract class Plot {
                 val = startY + i * yScale;
                 y = getScreenYFor(val);
             }
+        }
+
+        private float getCenterShiftAmount(PApplet window, String value) {
+           if (value.startsWith("-")) value = value + "-";  // add extra dummy character so leading "-" isn't counted
+                                                            // in shift amount
+            return window.textWidth(value)/2;
         }
 
         private double getMinorScale(double xScale) {
