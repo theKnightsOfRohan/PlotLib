@@ -35,6 +35,12 @@ public class Main extends PApplet {
         if (mousePressed && keyPressed && key == CODED && keyCode == CONTROL) {
             plt.zoomIn(0.01, 0.05, mouseX, mouseY);
         }
+
+        if (mousePressed && startClick != null) {
+            fill(0,0,0,0);
+            stroke(0);
+            rect(startClick.x, startClick.y, (mouseX - startClick.x), (mouseY - startClick.y));
+        }
     }
 
     public void mousePressed() {
@@ -45,12 +51,6 @@ public class Main extends PApplet {
         if (mouseButton == RIGHT) {
             startClick = null;
             plt.resetViewBoundaries();
-        }
-    }
-
-    public void mouseDragged() {
-        if (startClick != null) {
-            rect(startClick.x, startClick.y, (mouseX - startClick.x), (mouseY - startClick.y));
         }
     }
 
