@@ -38,6 +38,11 @@ public class Main extends PApplet {
             startClick = new PVector(mouseX, mouseY);
             System.out.println("Mouse pressed");
         }
+
+        if (mouseButton == RIGHT) {
+            startClick = null;
+            plt.resetViewBoundaries();
+        }
     }
 
     public void mouseDragged() {
