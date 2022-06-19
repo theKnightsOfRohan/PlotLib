@@ -24,17 +24,22 @@ public class Main extends PApplet {
         plt.set(ScatterPlot.Setting.show_border, true);
         plt.setTextSize(20);
 
-        plt.plot(x, y1).fillColor("red").strokeWeight(5).strokeColor("red").style("-");
-        plt.plot(x, y2).fillColor("blue").strokeWeight(5).strokeColor("blue").style("-");
+        plt.plot(x, y1).fillColor("red").strokeWeight(2).strokeColor("red").style("-");
+        plt.plot(x, y2).fillColor("blue").strokeWeight(2).strokeColor("blue").style("-");
     }
 
     public void draw() {
-        background(200);
+        background(255);
         plt.draw(this);
+
+        if (mousePressed && keyPressed && key == CODED && keyCode == CONTROL) {
+            plt.zoomIn(0.01, 0.05, mouseX, mouseY);
+            System.out.println("Zooming in ");
+        }
     }
 
     public void mousePressed() {
-        if (plt.containsMouse(this)) {
+        if (plt.containsMouse(this) && !keyPressed) {
             startClick = new PVector(mouseX, mouseY);
             System.out.println("Mouse pressed");
         }

@@ -103,18 +103,20 @@ public abstract class Plot {
     }
 
     public void zoomIn(double zoomAmount, double reCenterAmount, double targetX, double targetY) {
-        overrideDataView = true;
+        targetX = getDataXFor(targetX);
+        targetY = getDataYFor(targetY);
 
         double newWidth = (getDataViewMaxX() - getDataViewMinX())*(1.0/(1 + zoomAmount));
         double newHeight = (getDataViewMaxY() - getDataViewMinY())*(1.0/(1 + zoomAmount));
 
-        double newCenterX = (targetX - getDataViewCenterX())*reCenterAmount;
-        double newCenterY = (targetY - getDataViewCenterY())*reCenterAmount;
+        double newCenterX = getDataViewCenterX() + (targetX - getDataViewCenterX())*reCenterAmount;
+        double newCenterY = getDataViewCenterY() + (targetY - getDataViewCenterY())*reCenterAmount;
 
         this.dataViewMinX = newCenterX - newWidth/2;
         this.dataViewMaxX = newCenterX + newWidth/2;
         this.dataViewMinY = newCenterY - newHeight/2;
         this.dataViewMaxY = newCenterY + newHeight/2;
+        this.overrideDataView = true;
     }
 
     private double getDataViewCenterY() {
