@@ -24,6 +24,9 @@ public abstract class Plot {
     protected double dataMinY;
     protected double dataMaxX;
     protected double dataMaxY;
+    protected double dataViewMinX, dataViewMaxX;
+    protected double dataViewMinY, dataViewMaxY;
+    protected boolean overrideDataView = false;
     protected boolean needScaling = true;
 
     /***
@@ -73,6 +76,97 @@ public abstract class Plot {
 
         drawAxes(window);
         drawDataPoints(window);
+    }
+
+    public boolean containsMouse(PApplet window) {
+        return isInBounds(window.mouseX, window.mouseY);
+    }
+
+    public double getDataViewMinX() {
+        if (overrideDataView) return dataViewMinX;
+        return dataMinX;
+    }
+
+    public double getDataViewMinY() {
+        if (overrideDataView) return dataViewMinY;
+        return dataMinY;
+    }
+
+    public double getDataViewMaxX() {
+        if (overrideDataView) return dataViewMaxX;
+        return dataMaxX;
+    }
+
+    public double getDataViewMaxY() {
+        if (overrideDataView) return dataViewMaxY;
+        return dataMaxY;
+    }
+
+    public void zoomIn(double zoomAmount, double reCenterAmount, double targetX, double targetY) {
+        overrideDataView = true;
+
+        double newWidth = (getDataViewMaxX() - getDataViewMinX())*(1.0/(1 + zoomAmount));
+        double newHeight = (getDataViewMaxY() - getDataViewMinY())*(1.0/(1 + zoomAmount));
+
+        double newCenterX = (targetX - getDataViewCenterX())*reCenterAmount;
+        double newCenterY = (targetY - getDataViewCenterY())*reCenterAmount;
+
+        this.dataViewMinX = newCenterX - newWidth/2;
+        this.dataViewMaxX = newCenterX + newWidth/2;
+        this.dataViewMinY = newCenterY - newHeight/2;
+        this.dataViewMaxY = newCenterY + newHeight/2;
+    }
+
+    private double getDataViewCenterY() {
+        return getDataViewMinY() + (getDataViewMaxY() - getDataViewMinY())/2;
+    }
+
+    private double getDataViewCenterX() {
+        return getDataViewMinX() + (getDataViewMaxX() - getDataViewMinX())/2;
+    }
+
+    public void resetViewBoundaries() {
+        this.overrideDataView = false;
+        this.dataViewMaxX = this.dataMaxX;
+        this.dataViewMinX = this.dataMinX;
+        this.dataViewMaxY = this.dataMinY;
+        this.dataViewMinY = this.dataMinY;
+    }
+
+    public void zoomViewTo(double minX, double minY, double maxX, double maxY) {
+        debugPrintCurrentDataView();
+
+        this.overrideDataView = true;
+        this.dataViewMinX = minX;
+        this.dataViewMinY = minY;
+        this.dataViewMaxX = maxX;
+        this.dataViewMaxY = maxY;
+
+        debugPrintCurrentDataView();
+    }
+
+    private void debugPrintCurrentDataView() {
+        System.out.println(getDataViewMinX() + ", " + getDataViewMinY() + " to " + getDataViewMaxX() + ", " + getDataViewMaxY());
+    }
+
+    /***
+     * Zoom plot view to data ranges corresponding to current screen coordinates (x, y) to (x1, y1)
+     * @param x x coordinate of upper left corner of region to zoom to
+     * @param y y coordinate of upper left corner of region to zoom to
+     * @param x1 x coordiante of lower right corner of region to zoom to
+     * @param y1 y coordinate of lower right corner of region to zoom to
+     */
+    public void zoomViewToScreenCoordinates(float x, float y, float x1, float y1) {
+        double dx = getDataXFor(x);
+        double dx2 = getDataXFor(x1);
+        double dy = getDataYFor(y);
+        double dy2 = getDataYFor(y1);
+        double minx = Math.min(dx, dx2);
+        double maxx = Math.max(dx, dx2);
+        double miny = Math.min(dy, dy2);
+        double maxy = Math.max(dy, dy2);
+
+        zoomViewTo(minx, miny, maxx, maxy);
     }
 
     private void reScaleFromData() {
@@ -131,7 +225,7 @@ public abstract class Plot {
 
     protected void plotDataSet(PApplet window, PlotData dataset) {
         dataset.rescale(cornerX, cornerX + width, cornerY + height, cornerY,
-                this.dataMinX, this.dataMaxX, this.dataMinY, this.dataMaxY);
+                getDataViewMinX(), getDataViewMaxX(), getDataViewMinY(), getDataViewMaxY());
 
         // TODO: refactor so datasets draw themselves...?
         window.fill(dataset.getFillColor());
@@ -140,7 +234,7 @@ public abstract class Plot {
 
         if (dataset.getStyle() == PlotData.Style.POINT) {
             for (int i = 0; i < dataset.size(); i++) {
-                window.ellipse(dataset.getDisplayX(i), dataset.getDisplayY(i), 2, 2);
+                ellipse(window, dataset.getDisplayX(i), dataset.getDisplayY(i), 2, 2);
             }
         } else if (dataset.getStyle() == PlotData.Style.LINE) {
             for (int i = 1; i < dataset.size(); i++) {
@@ -148,9 +242,27 @@ public abstract class Plot {
                 float y1 = dataset.getDisplayY(i-1);
                 float x2 = dataset.getDisplayX(i);
                 float y2 = dataset.getDisplayY(i);
-                window.line(x1, y1, x2, y2);
+                line(window, x1, y1, x2, y2);
             }
         }
+    }
+
+    private void line(PApplet window, float x1, float y1, float x2, float y2) {
+        if (isInBounds(x1, y1) && isInBounds(x2, y2)) {
+            window.line(x1, y1, x2, y2);
+        }
+    }
+
+    private void ellipse(PApplet window, float displayX, float displayY, float w, float h) {
+        if (isInBounds(displayX + w/2, displayY + h/2) && isInBounds(displayX - w/2, displayY - h/2)) {
+            window.ellipse(displayX, displayY, w, h);
+        }
+    }
+
+    private boolean isInBounds(float x, float y) {
+        if (x < getLeftX() || x > getRightX()) return false;
+        if (y < getTopY() || y > getBottomY()) return false;
+        return true;
     }
 
     protected void reScaleData(PApplet window) {
@@ -170,7 +282,7 @@ public abstract class Plot {
             int axisX = (int) getScreenXFor(0);
             int axisY = (int) getScreenYFor(0);
             window.strokeWeight(AXIS_STROKE_WEIGHT);
-            window.stroke(0);
+            window.stroke(0);       // TODO: only draw axes if in bounds for plot?!
             window.line(cornerX, axisY, cornerX + width, axisY);
             window.line(axisX, cornerY, axisX, cornerY + height);
             window.strokeWeight(1);
@@ -186,19 +298,19 @@ public abstract class Plot {
     }
 
     public double getScreenXFor(double dataX) {
-        return Plot.map(dataX, dataMinX, dataMaxX, cornerX, cornerX + width);  // TODO: use getters for this
+        return Plot.map(dataX, getDataViewMinX(), getDataViewMaxX(), cornerX, cornerX + width);
     }
 
     public double getScreenYFor(double dataY) {
-        return Plot.map(dataY, dataMinY, dataMaxY, cornerY + height, cornerY);  // TODO: use getters for this
+        return Plot.map(dataY, getDataViewMinY(), getDataViewMaxY(), cornerY + height, cornerY);
     }
 
     public double getDataXFor(double screenX) {
-        return Plot.map(screenX, cornerX, cornerX + width, dataMinX, dataMaxX);  // TODO: use getters for this
+        return Plot.map(screenX, cornerX, cornerX + width, getDataViewMinX(), getDataViewMaxX());
     }
 
     public double getDataYFor(double screenY) {
-        return Plot.map(screenY, cornerY + height, cornerY, dataMinY, dataMaxY);  // TODO: use getters for this
+        return Plot.map(screenY, cornerY + height, cornerY, getDataViewMinY(), getDataViewMaxY());
     }
 
     public void removePlot(int plotIndex) {
@@ -267,15 +379,15 @@ public abstract class Plot {
             numXLines = (width / MIN_PIXEL_SPACING);
             numYLines = (height / MIN_PIXEL_SPACING);
 
-            double[] xScaleInfo = calcScale(dataMinX, dataMaxX, numXLines);
-            double[] yScaleInfo = calcScale(dataMinY, dataMaxY, numYLines);
+            double[] xScaleInfo = calcScale(getDataViewMinX(), getDataViewMaxX(), numXLines);
+            double[] yScaleInfo = calcScale(getDataViewMinY(), getDataViewMaxY(), numYLines);
             this.xScale = xScaleInfo[0];
             this.yScale = yScaleInfo[0];
             this.xScaleSigFigs = Math.max(0, -(int) xScaleInfo[1]); // 2 decimals is 10^(-2).  -2 --> 2
             this.yScaleSigFigs = Math.max(0, -(int) yScaleInfo[1]); // no decimals might be 10^(2).  2 --> -2, but max to 0
 
             // --------------- draw major x grid -----------------------------------------
-            double startX = MathUtils.ceilToNearest(dataMinX, xScale);
+            double startX = MathUtils.ceilToNearest(getDataViewMinX(), xScale);
 
             double val = startX;
             double x = getScreenXFor(val);
@@ -306,7 +418,7 @@ public abstract class Plot {
                 x = getScreenXFor(val);
             }*/
 
-            double startY = MathUtils.ceilToNearest(dataMinY, yScale);
+            double startY = MathUtils.ceilToNearest(getDataViewMinY(), yScale);
             val = startY + yScale;
             double y = getScreenYFor(val);
             i = 0;
