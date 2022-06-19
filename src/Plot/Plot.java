@@ -9,6 +9,8 @@ import java.util.List;
 
 public abstract class Plot {
     private static final int AXIS_STROKE_WEIGHT = 2;
+    private static final float MIN_X_ZOOM_THRESHOLD = 50;
+    private static final float MIN_Y_ZOOM_THRESHOLD = 50;
 
     // ---- STYLE ----
     protected int cornerX;
@@ -155,6 +157,11 @@ public abstract class Plot {
      * @param y1 y coordinate of lower right corner of region to zoom to
      */
     public void zoomViewToScreenCoordinates(float x, float y, float x1, float y1) {
+        if (Math.abs(x - x1) < MIN_X_ZOOM_THRESHOLD ||
+            Math.abs(y - y1) < MIN_Y_ZOOM_THRESHOLD) {
+            System.err.println("Tried to zoom into too small a region");
+            return;
+        }
         double dx = getDataXFor(x);
         double dx2 = getDataXFor(x1);
         double dy = getDataYFor(y);
