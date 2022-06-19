@@ -48,8 +48,8 @@ public abstract class Plot {
 
         this.cornerX = x1;
         this.cornerY = y1;
-        this.width = x2-x1;
-        this.height = y2-y1;
+        this.width = x2 - x1;
+        this.height = y2 - y1;
         this.datasets = new ArrayList<>();
         settings = new HashMap<Setting, Boolean>();
         this.axes = new Axes();
@@ -108,25 +108,25 @@ public abstract class Plot {
         targetX = getDataXFor(targetX);
         targetY = getDataYFor(targetY);
 
-        double newWidth = (getDataViewMaxX() - getDataViewMinX())*(1.0/(1 + zoomAmount));
-        double newHeight = (getDataViewMaxY() - getDataViewMinY())*(1.0/(1 + zoomAmount));
+        double newWidth = (getDataViewMaxX() - getDataViewMinX()) * (1.0 / (1 + zoomAmount));
+        double newHeight = (getDataViewMaxY() - getDataViewMinY()) * (1.0 / (1 + zoomAmount));
 
-        double newCenterX = getDataViewCenterX() + (targetX - getDataViewCenterX())*reCenterAmount;
-        double newCenterY = getDataViewCenterY() + (targetY - getDataViewCenterY())*reCenterAmount;
+        double newCenterX = getDataViewCenterX() + (targetX - getDataViewCenterX()) * reCenterAmount;
+        double newCenterY = getDataViewCenterY() + (targetY - getDataViewCenterY()) * reCenterAmount;
 
-        this.dataViewMinX = newCenterX - newWidth/2;
-        this.dataViewMaxX = newCenterX + newWidth/2;
-        this.dataViewMinY = newCenterY - newHeight/2;
-        this.dataViewMaxY = newCenterY + newHeight/2;
+        this.dataViewMinX = newCenterX - newWidth / 2;
+        this.dataViewMaxX = newCenterX + newWidth / 2;
+        this.dataViewMinY = newCenterY - newHeight / 2;
+        this.dataViewMaxY = newCenterY + newHeight / 2;
         this.overrideDataView = true;
     }
 
     private double getDataViewCenterY() {
-        return getDataViewMinY() + (getDataViewMaxY() - getDataViewMinY())/2;
+        return getDataViewMinY() + (getDataViewMaxY() - getDataViewMinY()) / 2;
     }
 
     private double getDataViewCenterX() {
-        return getDataViewMinX() + (getDataViewMaxX() - getDataViewMinX())/2;
+        return getDataViewMinX() + (getDataViewMaxX() - getDataViewMinX()) / 2;
     }
 
     public void resetViewBoundaries() {
@@ -158,7 +158,7 @@ public abstract class Plot {
      */
     public void zoomViewToScreenCoordinates(float x, float y, float x1, float y1) {
         if (Math.abs(x - x1) < MIN_X_ZOOM_THRESHOLD ||
-            Math.abs(y - y1) < MIN_Y_ZOOM_THRESHOLD) {
+                Math.abs(y - y1) < MIN_Y_ZOOM_THRESHOLD) {
             System.err.println("Tried to zoom into too small a region");
             return;
         }
@@ -243,8 +243,8 @@ public abstract class Plot {
             }
         } else if (dataset.getStyle() == PlotData.Style.LINE) {
             for (int i = 1; i < dataset.size(); i++) {
-                float x1 = dataset.getDisplayX(i-1);
-                float y1 = dataset.getDisplayY(i-1);
+                float x1 = dataset.getDisplayX(i - 1);
+                float y1 = dataset.getDisplayY(i - 1);
                 float x2 = dataset.getDisplayX(i);
                 float y2 = dataset.getDisplayY(i);
                 line(window, x1, y1, x2, y2);
@@ -259,7 +259,7 @@ public abstract class Plot {
     }
 
     private void ellipse(PApplet window, float displayX, float displayY, float w, float h) {
-        if (isInBounds(displayX + w/2, displayY + h/2) && isInBounds(displayX - w/2, displayY - h/2)) {
+        if (isInBounds(displayX + w / 2, displayY + h / 2) && isInBounds(displayX - w / 2, displayY - h / 2)) {
             window.ellipse(displayX, displayY, w, h);
         }
     }
@@ -369,7 +369,7 @@ public abstract class Plot {
     // TODO: organize all features so easy to turn on and off
     protected class Axes {
         private static final int MIN_PIXEL_SPACING = 50;
-        public float yAxisTextXAdjust, xAxisTextYAdjust;
+        public float yAxisTextXAdjust = -5, xAxisTextYAdjust = 5;
 
         protected int numXLines, numYLines;
         protected double xScale, yScale;
@@ -435,8 +435,8 @@ public abstract class Plot {
                 window.stroke(0);
 
                 String value = String.format("%." + this.yScaleSigFigs + "f", val);
-                window.textAlign(PConstants.RIGHT);
-                window.text(value, getLeftX() + - yAxisTextXAdjust/2 + getYAxisTextXAdjust(), (float) y);
+                window.textAlign(PConstants.RIGHT, PConstants.CENTER);
+                window.text(value, getLeftX() + getYAxisTextXAdjust(), (float) y - yAxisTextSize*0.1f);
 
                 i++;
                 val = startY + i * yScale;
@@ -445,14 +445,14 @@ public abstract class Plot {
         }
 
         private float getCenterShiftAmount(PApplet window, String value) {
-           if (value.startsWith("-")) value = value + "-";  // add extra dummy character so leading "-" isn't counted
-                                                            // in shift amount
-            return window.textWidth(value)/2;
+            if (value.startsWith("-")) value = value + "-";  // add extra dummy character so leading "-" isn't counted
+            // in shift amount
+            return window.textWidth(value) / 2;
         }
 
         private double getMinorScale(double xScale) {
-            if ((""+xScale).endsWith("2")) return xScale/4;
-            return xScale/5;
+            if (("" + xScale).endsWith("2")) return xScale / 4;
+            return xScale / 5;
         }
     }
 
@@ -481,32 +481,32 @@ public abstract class Plot {
     }
 
     private double getRange() {
-        return dataMaxY- dataMinY;
+        return dataMaxY - dataMinY;
     }
 
     private double getDomain() {
         return dataMaxX - dataMinX;
     }
 
-    protected static double[] calcScale(double minVal, double maxVal, int numIntervals){
-        double[] scale = { 1, 2, 5 };
+    protected static double[] calcScale(double minVal, double maxVal, int numIntervals) {
+        double[] scale = {1, 2, 5};
 
-        double in = (maxVal-minVal)/numIntervals;
+        double in = (maxVal - minVal) / numIntervals;
         int count = 0;
-        while ( in > scale[ scale.length - 1] ) {
+        while (in > scale[scale.length - 1]) {
             count++;
             in /= 10;
         }
 
-        while ( in <= scale[ scale.length - 1]/10 ) {
+        while (in <= scale[scale.length - 1] / 10) {
             count--;
             in *= 10;
         }
 
         int scaleIndex = 0;
-        while ( in > scale[scaleIndex] ) scaleIndex++;
+        while (in > scale[scaleIndex]) scaleIndex++;
 
-        return new double[] {scale[scaleIndex]*Math.pow(10, count), count};
+        return new double[]{scale[scaleIndex] * Math.pow(10, count), count};
     }
 
 }
