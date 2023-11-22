@@ -118,6 +118,10 @@ public class PlotData {
         return x.get(i);
     }
 
+    public double getDataY(int i) {
+        return y.get(i);
+    }
+
     /***
      * Add a new set of data coordinates to the plot
      * 
@@ -301,4 +305,5 @@ public class PlotData {
             }
         }
     }
+
 }
