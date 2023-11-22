@@ -390,4 +390,7 @@ public abstract class Plot {
         return new double[] { scale[scaleIndex] * Math.pow(10, count), count };
     }
 
+    public List<PlotData> getDatasets() {
+        return this.datasets;
+    }
 }

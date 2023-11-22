@@ -14,6 +14,6 @@ public class PlotTest {
 		assertEquals(14, result, 0.001);
 
 		result = Plot.map(8, 0, 10, -100, 100);
-		assertEquals(160, result, 0.001);
+		assertEquals(60, result, 0.001);
 	}
 }
