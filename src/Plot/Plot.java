@@ -140,24 +140,7 @@ public abstract class Plot {
         dataset.rescale(cornerX, cornerX + width, cornerY + height, cornerY,
                 this.dataMinX, this.dataMaxX, this.dataMinY, this.dataMaxY);
 
-        // TODO: refactor so datasets draw themselves...?
-        window.fill(dataset.getFillColor());
-        window.stroke(dataset.getStrokeColor());
-        window.strokeWeight(dataset.getStrokeWeight());
-
-        if (dataset.getStyle() == PlotData.Style.POINT) {
-            for (int i = 0; i < dataset.size(); i++) {
-                window.ellipse(dataset.getDisplayX(i), dataset.getDisplayY(i), 2, 2);
-            }
-        } else if (dataset.getStyle() == PlotData.Style.LINE) {
-            for (int i = 1; i < dataset.size(); i++) {
-                float x1 = dataset.getDisplayX(i - 1);
-                float y1 = dataset.getDisplayY(i - 1);
-                float x2 = dataset.getDisplayX(i);
-                float y2 = dataset.getDisplayY(i);
-                window.line(x1, y1, x2, y2);
-            }
-        }
+        dataset.drawSelf(window);
     }
 
     protected void reScaleData(PApplet window) {
