@@ -10,7 +10,7 @@ import processing.core.PApplet;
  */
 public class PlotData {
     public static enum Style {
-        POINT, LINE
+        POINT, LINE, DASH
     }
 
     public static final int BLACK = 0xFF000000;
@@ -22,6 +22,7 @@ public class PlotData {
     private int strokeColor, fillColor;
     private float strokeWeight;
     private Style style;
+    private int dashLength;
 
     // ------ DATA --------
     private List<Double> x, y;
@@ -48,6 +49,7 @@ public class PlotData {
         fillColor = BLACK;
         style = Style.POINT;
         strokeWeight = 1;
+        dashLength = 5;
     }
 
     /***
@@ -213,13 +215,18 @@ public class PlotData {
         return this;
     }
 
-    // TODO: add dashed-line style
     public PlotData style(String style) {
-        if (style.equals(".")) {
-            this.style = Style.POINT;
-        } else if (style.equals("-")) {
-            this.style = Style.LINE;
+        switch (style) {
+            case "." -> this.style = Style.POINT;
+            case "-" -> this.style = Style.LINE;
+            case "--" -> this.style = Style.DASH;
         }
+
+        return this;
+    }
+
+    public PlotData dashLength(int length) {
+        this.dashLength = length;
         return this;
     }
 
@@ -291,19 +298,34 @@ public class PlotData {
         window.stroke(this.getStrokeColor());
         window.strokeWeight(this.getStrokeWeight());
 
-        if (this.getStyle() == PlotData.Style.POINT) {
-            for (int i = 0; i < this.size(); i++) {
-                window.ellipse(this.getDisplayX(i), this.getDisplayY(i), 2, 2);
+        switch (this.getStyle()) {
+            case POINT -> {
+                for (int i = 0; i < this.size(); i++) {
+                    window.ellipse(this.getDisplayX(i), this.getDisplayY(i), 2, 2);
+                }
             }
-        } else if (this.getStyle() == PlotData.Style.LINE) {
-            for (int i = 1; i < this.size(); i++) {
-                float x1 = this.getDisplayX(i - 1);
-                float y1 = this.getDisplayY(i - 1);
-                float x2 = this.getDisplayX(i);
-                float y2 = this.getDisplayY(i);
-                window.line(x1, y1, x2, y2);
+            case LINE -> {
+                for (int i = 1; i < this.size(); i++) {
+                    float x1 = this.getDisplayX(i - 1);
+                    float y1 = this.getDisplayY(i - 1);
+                    float x2 = this.getDisplayX(i);
+                    float y2 = this.getDisplayY(i);
+                    window.line(x1, y1, x2, y2);
+                }
+            }
+            case DASH -> {
+                for (int i = dashLength; i < this.size() - dashLength; i += dashLength) {
+                    for (int j = i - dashLength / 3; j < i + dashLength / 3; j++) {
+                        float x1 = this.getDisplayX(j);
+                        float y1 = this.getDisplayY(j);
+                        float x2 = this.getDisplayX(j + 1);
+                        float y2 = this.getDisplayY(j + 1);
+                        window.line(x1, y1, x2, y2);
+                    }
+                }
             }
         }
+
     }
 
 }

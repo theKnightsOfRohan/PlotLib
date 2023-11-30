@@ -74,5 +74,7 @@ public class PlotDataTest {
         assertEquals(PlotData.Style.POINT, plotData.getStyle());
         plotData.style("-");
         assertEquals(PlotData.Style.LINE, plotData.getStyle());
+        plotData.style("--");
+        assertEquals(PlotData.Style.DASH, plotData.getStyle());
     }
 }
