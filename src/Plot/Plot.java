@@ -246,7 +246,7 @@ public abstract class Plot {
     }
 
     // TODO: refactor so cleaner
-    // TDOO: add minor grid lines
+    // TODO: add minor grid lines
     // TODO: organize all features so easy to turn on and off
     protected class Axes {
         private static final int MIN_PIXEL_SPACING = 50;
