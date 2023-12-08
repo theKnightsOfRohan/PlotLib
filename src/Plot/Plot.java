@@ -17,6 +17,11 @@ public abstract class Plot {
     protected int cornerY;
     protected int width;
     protected int height;
+
+    public enum Setting {
+        show_axes, freeze_y_scale, freeze_x_scale, show_border
+    }
+
     protected HashMap<Setting, Boolean> settings;
     protected Axes axes;
 
@@ -346,10 +351,6 @@ public abstract class Plot {
 
     public void setYAxisTextXAdjustment(float amt) {
         this.axes.yAxisTextXAdjust = amt;
-    }
-
-    public enum Setting {
-        show_axes, freeze_y_scale, freeze_x_scale, show_border
     }
 
     // TODO: refactor so cleaner
