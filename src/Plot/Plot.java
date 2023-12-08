@@ -246,13 +246,101 @@ public abstract class Plot {
         dataset.rescale(cornerX, cornerX + width, cornerY + height, cornerY,
                 getDataViewMinX(), getDataViewMaxX(), getDataViewMinY(), getDataViewMaxY());
 
-        dataset.drawSelf(window);
+        dataset.drawSelf(window, this);
     }
 
     private boolean isInBounds(float x, float y) {
         if (x < getLeftX() || x > getRightX()) return false;
         if (y < getTopY() || y > getBottomY()) return false;
         return true;
+    }
+
+    // ===== constants for clipping algorithm ========
+    private static final int INSIDE = 0; // 0000
+    private static final int LEFT = 1;   // 0001
+    private static final int RIGHT = 2;  // 0010
+    private static final int BOTTOM = 4; // 0100
+    private static final int TOP = 8;    // 1000
+    // ===== constants for clipping algorithm ========
+
+    // Cohen-Sutherland line clipping algorithm
+    public int[] clipLine(int x1, int y1, int x2, int y2) {
+        int windowHeight = (int)(Math.abs(this.getBottomY() - this.getTopY()));
+        int windowWidth = (int)(Math.abs(this.getRightX() - this.getLeftX()));
+
+        int code1 = computeCode(x1, y1, windowWidth, windowHeight);
+        int code2 = computeCode(x2, y2, windowWidth, windowHeight);
+        boolean accept = false;
+
+        while (true) {
+            if ((code1 == 0) && (code2 == 0)) {
+                accept = true;
+                break;
+            } else if ((code1 & code2) != 0) {
+                break;
+            } else {
+                int codeOut;
+                int x, y;
+
+                if (code1 != 0) {
+                    codeOut = code1;
+                } else {
+                    codeOut = code2;
+                }
+
+                if ((codeOut & TOP) != 0) {
+                    x = (int) (x1 + (x2 - x1) * (this.getTopY() - y1) / (y2 - y1));
+                    y = (int) this.getTopY();
+                } else if ((codeOut & BOTTOM) != 0) {
+                    x = (int) (x1 + (x2 - x1) * (this.getTopY() + windowHeight - y1) / (y2 - y1));
+                    y = (int) (this.getTopY() + windowHeight);
+                } else if ((codeOut & RIGHT) != 0) {
+                    y = (int) (y1 + (y2 - y1) * (this.getLeftX() + windowWidth - x1) / (x2 - x1));
+                    x = (int) (this.getLeftX()  + windowWidth);
+                } else if ((codeOut & LEFT) != 0) {
+                    y = (int) (y1 + (y2 - y1) * (this.getLeftX() - x1) / (x2 - x1));
+                    x = (int) this.getLeftX();
+                } else {
+                    x = 0;
+                    y = 0;
+                }
+
+                if (codeOut == code1) {
+                    x1 = x;
+                    y1 = y;
+                    code1 = computeCode(x1, y1, windowWidth, windowHeight);
+                } else {
+                    x2 = x;
+                    y2 = y;
+                    code2 = computeCode(x2, y2, windowWidth, windowHeight);
+                }
+            }
+        }
+
+        if (accept) {
+            return new int[] {x1, y1, x2, y2};
+        } else {
+            //System.err.println("Tried to clip line entirely outside viewing window");
+            return null;
+        }
+    }
+
+    private int computeCode(int x, int y, int windowWidth, int windowHeight) {
+        int code = INSIDE;
+
+        if (x < this.getLeftX()) {
+            code |= LEFT;
+        } else if (x > this.getLeftX() + windowWidth) {
+            code |= RIGHT;
+        }
+
+        if (y < this.getTopY()) {
+            code |= TOP;
+        } else if (y > this.getTopY() + windowHeight) {
+            code |= BOTTOM;
+        }
+
+        return code;
     }
 
     protected void reScaleData(PApplet window) {

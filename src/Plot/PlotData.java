@@ -322,7 +322,7 @@ public class PlotData {
         }
     }
 
-    public void drawSelf(PApplet window) {
+    public void drawSelf(PApplet window, Plot p) {
         window.fill(this.getFillColor());
         window.stroke(this.getStrokeColor());
         window.strokeWeight(this.getStrokeWeight());
@@ -337,7 +337,12 @@ public class PlotData {
                 float y1 = this.getDisplayY(i - 1);
                 float x2 = this.getDisplayX(i);
                 float y2 = this.getDisplayY(i);
-                window.line(x1, y1, x2, y2);
+
+                int[] clipped = p.clipLine((int)x1, (int)y1, (int)x2, (int)y2);
+
+                if (clipped != null) {
+                    window.line(clipped[0], clipped[1], clipped[2], clipped[3]);
+                }
             }
         } else if (this.getStyle() == DASH) {
             for (int i = dashLength; i < this.size() - dashLength; i += dashLength) {
