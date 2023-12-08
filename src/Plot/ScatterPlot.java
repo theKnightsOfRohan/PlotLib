@@ -74,7 +74,7 @@ public class ScatterPlot extends Plot {
 
         // If frozen scale, don't add data that's out of the range
         if (settings.containsKey(Setting.freeze_y_scale)) {
-            if (! inDataYRange(y) ) {
+            if (!inDataYRange(y)) {
                 return data;
             }
         }
@@ -83,5 +83,4 @@ public class ScatterPlot extends Plot {
         updateDataBoundsWith(data);
         return data;
     }
-
 }

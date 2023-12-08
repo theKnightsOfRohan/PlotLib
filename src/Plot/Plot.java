@@ -33,6 +33,7 @@ public abstract class Plot {
 
     /***
      * Create a plot from upper-left corner (x1, y1) to lower right corner (x2, y2)
+     *
      * @param x1 x coord of upper left corner
      * @param y1 y coord of upper left corner
      * @param x2 x coord of lower right corner
@@ -175,7 +176,8 @@ public abstract class Plot {
     }
 
     private void reScaleFromData() {
-        if (datasets.size() == 0) return;
+        if (datasets.size() == 0)
+            return;
         dataMinX = 0;
         dataMinY = 0;
         dataMaxX = 0;
@@ -210,17 +212,22 @@ public abstract class Plot {
     }
 
     protected void updateXBoundsWith(PlotData data) {
-        if (data.getDataMinX() < dataMinX) dataMinX = data.getDataMinX();
-        if (data.getDataMaxX() > dataMaxX) dataMaxX = data.getDataMaxX();
+        if (data.getDataMinX() < dataMinX)
+            dataMinX = data.getDataMinX();
+        if (data.getDataMaxX() > dataMaxX)
+            dataMaxX = data.getDataMaxX();
     }
 
     protected void updateYBoundsWith(PlotData data) {
-        if (data.getDataMinY() < dataMinY) dataMinY = data.getDataMinY();
-        if (data.getDataMaxY() > dataMaxY) dataMaxY = data.getDataMaxY();
+        if (data.getDataMinY() < dataMinY)
+            dataMinY = data.getDataMinY();
+        if (data.getDataMaxY() > dataMaxY)
+            dataMaxY = data.getDataMaxY();
     }
 
     protected void drawDataPoints(PApplet window) {
-        if (needScaling) reScaleData(window);
+        if (needScaling)
+            reScaleData(window);
 
         // TODO: remove data that's out of range if plot frozen?
         for (PlotData dataset : datasets) {
@@ -232,36 +239,7 @@ public abstract class Plot {
         dataset.rescale(cornerX, cornerX + width, cornerY + height, cornerY,
                 getDataViewMinX(), getDataViewMaxX(), getDataViewMinY(), getDataViewMaxY());
 
-        // TODO: refactor so datasets draw themselves...?
-        window.fill(dataset.getFillColor());
-        window.stroke(dataset.getStrokeColor());
-        window.strokeWeight(dataset.getStrokeWeight());
-
-        if (dataset.getStyle() == PlotData.Style.POINT) {
-            for (int i = 0; i < dataset.size(); i++) {
-                ellipse(window, dataset.getDisplayX(i), dataset.getDisplayY(i), 2, 2);
-            }
-        } else if (dataset.getStyle() == PlotData.Style.LINE) {
-            for (int i = 1; i < dataset.size(); i++) {
-                float x1 = dataset.getDisplayX(i - 1);
-                float y1 = dataset.getDisplayY(i - 1);
-                float x2 = dataset.getDisplayX(i);
-                float y2 = dataset.getDisplayY(i);
-                line(window, x1, y1, x2, y2);
-            }
-        }
-    }
-
-    private void line(PApplet window, float x1, float y1, float x2, float y2) {
-        if (isInBounds(x1, y1) && isInBounds(x2, y2)) {
-            window.line(x1, y1, x2, y2);
-        }
-    }
-
-    private void ellipse(PApplet window, float displayX, float displayY, float w, float h) {
-        if (isInBounds(displayX + w / 2, displayY + h / 2) && isInBounds(displayX - w / 2, displayY - h / 2)) {
-            window.ellipse(displayX, displayY, w, h);
-        }
+        dataset.drawSelf(window);
     }
 
     private boolean isInBounds(float x, float y) {
@@ -319,7 +297,10 @@ public abstract class Plot {
     }
 
     public void removePlot(int plotIndex) {
-        // TODO: bounds check
+        if (plotIndex < 0 || plotIndex >= this.datasets.size()) {
+            System.err.println("Error: plotIndex out of bounds");
+            return;
+        }
         this.datasets.remove(plotIndex);
     }
 
@@ -328,14 +309,20 @@ public abstract class Plot {
     }
 
     public List<Integer> getXScreenCoords(int dataIndex) {
-        // TODO: bounds check
+        if (dataIndex < 0 || dataIndex >= this.datasets.size()) {
+            System.err.println("Error: dataIndex out of bounds");
+            return null;
+        }
         PlotData dataset = this.datasets.get(dataIndex);
 
         return dataset.getScreenXCoords();
     }
 
     public List<Integer> getYScreenCoords(int dataIndex) {
-        // TODO: bounds check
+        if (dataIndex < 0 || dataIndex >= this.datasets.size()) {
+            System.err.println("Error: dataIndex out of bounds");
+            return null;
+        }
         PlotData dataset = this.datasets.get(dataIndex);
 
         return dataset.getScreenYCoords();
@@ -363,9 +350,8 @@ public abstract class Plot {
         show_axes, freeze_y_scale, freeze_x_scale, show_border
     }
 
-
     // TODO: refactor so cleaner
-    // TDOO: add minor grid lines
+    // TODO: add minor grid lines
     // TODO: organize all features so easy to turn on and off
     protected class Axes {
         private static final int MIN_PIXEL_SPACING = 50;
@@ -379,7 +365,8 @@ public abstract class Plot {
         protected int yAxisTextSize = 10;
 
         protected void draw(PApplet window) {
-            if (getDomain() == 0 || getRange() == 0) return;
+            if (getDomain() == 0 || getRange() == 0)
+                return;
 
             numXLines = (width / MIN_PIXEL_SPACING);
             numYLines = (height / MIN_PIXEL_SPACING);
@@ -388,8 +375,9 @@ public abstract class Plot {
             double[] yScaleInfo = calcScale(getDataViewMinY(), getDataViewMaxY(), numYLines);
             this.xScale = xScaleInfo[0];
             this.yScale = yScaleInfo[0];
-            this.xScaleSigFigs = Math.max(0, -(int) xScaleInfo[1]); // 2 decimals is 10^(-2).  -2 --> 2
-            this.yScaleSigFigs = Math.max(0, -(int) yScaleInfo[1]); // no decimals might be 10^(2).  2 --> -2, but max to 0
+            this.xScaleSigFigs = Math.max(0, -(int) xScaleInfo[1]); // 2 decimals is 10^(-2). -2 --> 2
+            this.yScaleSigFigs = Math.max(0, -(int) yScaleInfo[1]); // no decimals might be 10^(2). 2 --> -2, but max to
+                                                                    // 0
 
             // --------------- draw major x grid -----------------------------------------
             double startX = MathUtils.ceilToNearest(getDataViewMinX(), xScale);
@@ -413,15 +401,17 @@ public abstract class Plot {
             }
 
             // -------------- draw minor grid -----------------------------------
-/*            double xMinorScale = getMinorScale(xScale);
-            while (x >= cornerX) {
-                window.stroke(127);
-                window.line((float)x, cornerY, (float)x, cornerY+height);
-
-                i--;
-                val = startX + i*xMinorScale;
-                x = getScreenXFor(val);
-            }*/
+            /*
+             * double xMinorScale = getMinorScale(xScale);
+             * while (x >= cornerX) {
+             * window.stroke(127);
+             * window.line((float)x, cornerY, (float)x, cornerY+height);
+             *
+             * i--;
+             * val = startX + i*xMinorScale;
+             * x = getScreenXFor(val);
+             * }
+             */
 
             double startY = MathUtils.ceilToNearest(getDataViewMinY(), yScale);
             val = startY + yScale;
@@ -435,6 +425,8 @@ public abstract class Plot {
                 window.stroke(0);
 
                 String value = String.format("%." + this.yScaleSigFigs + "f", val);
+                window.textAlign(PConstants.RIGHT);
+                window.text(value, getLeftX() + -yAxisTextXAdjust / 2 + getYAxisTextXAdjust(), (float) y);
                 window.textAlign(PConstants.RIGHT, PConstants.CENTER);
                 window.text(value, getLeftX() + getYAxisTextXAdjust(), (float) y - yAxisTextSize*0.1f);
 
@@ -504,9 +496,13 @@ public abstract class Plot {
         }
 
         int scaleIndex = 0;
-        while (in > scale[scaleIndex]) scaleIndex++;
+        while (in > scale[scaleIndex])
+            scaleIndex++;
 
-        return new double[]{scale[scaleIndex] * Math.pow(10, count), count};
+        return new double[] { scale[scaleIndex] * Math.pow(10, count), count };
     }
 
+    public List<PlotData> getDatasets() {
+        return this.datasets;
+    }
 }

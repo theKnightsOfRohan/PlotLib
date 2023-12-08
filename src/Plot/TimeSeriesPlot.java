@@ -1,5 +1,7 @@
 package Plot;
 
+import java.util.ArrayList;
+
 public class TimeSeriesPlot extends Plot {
     private int dataWidth;
 
@@ -10,6 +12,7 @@ public class TimeSeriesPlot extends Plot {
 
     /***
      * Add data (x, y) to last dataset.
+     * 
      * @param x
      * @param y
      * @return
@@ -18,13 +21,16 @@ public class TimeSeriesPlot extends Plot {
         if (datasets.size() == 0) {
             return plot(0, x, y);
         } else {
-            return plot( datasets.size()-1, x, y);
+            return plot(datasets.size() - 1, x, y);
         }
     }
 
     /***
-     * Add data point (x, y) to dataset index.  If index is invalid a new dataset is created.
-     * Note: if freeze_y_scale setting is true and point is out of range it won't be added.
+     * Add data point (x, y) to dataset index. If index is invalid a new dataset is
+     * created.
+     * Note: if freeze_y_scale setting is true and point is out of range it won't be
+     * added.
+     * 
      * @param index
      * @param x
      * @param y
@@ -42,7 +48,7 @@ public class TimeSeriesPlot extends Plot {
 
         // If frozen scale, don't add data that's out of the range
         if (settings.containsKey(Setting.freeze_y_scale)) {
-            if (! inDataYRange(y) ) {           // TODO: print warning if verbose mode on
+            if (!inDataYRange(y)) { // TODO: print warning if verbose mode on
                 return data;
             }
         }
@@ -61,11 +67,16 @@ public class TimeSeriesPlot extends Plot {
         return data;
     }
 
+    // TODO: decide if this needs to be public
     private void shiftXBounds(PlotData data) {
         this.dataMinX = data.getDataX(0);
-        this.dataMaxX = data.getDataX(data.size()-1);
+        this.dataMaxX = data.getDataX(data.size() - 1);
 
         data.setDataMinX(dataMinX);
         data.setDataMaxX(dataMaxX);
+    }
+
+    public ArrayList<PlotData> getDatasets() {
+        return datasets;
     }
 }
