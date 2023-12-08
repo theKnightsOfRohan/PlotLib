@@ -91,7 +91,9 @@ public abstract class Plot {
     }
 
     public double getDataViewMinY() {
-        if (overrideDataView) return dataViewMinY;
+        if (overrideDataView) {
+            return dataViewMinY;
+        }
         return dataMinY;
     }
 
@@ -105,7 +107,7 @@ public abstract class Plot {
         return dataMaxY;
     }
 
-    public void zoomIn(double zoomAmount, double reCenterAmount, double targetX, double targetY) {
+    public void zoomInOn(double zoomAmount, double reCenterAmount, double targetX, double targetY) {
         targetX = getDataXFor(targetX);
         targetY = getDataYFor(targetY);
 
@@ -378,6 +380,7 @@ public abstract class Plot {
             this.xScaleSigFigs = Math.max(0, -(int) xScaleInfo[1]); // 2 decimals is 10^(-2). -2 --> 2
             this.yScaleSigFigs = Math.max(0, -(int) yScaleInfo[1]); // no decimals might be 10^(2). 2 --> -2, but max to
                                                                     // 0
+
 
             // --------------- draw major x grid -----------------------------------------
             double startX = MathUtils.ceilToNearest(getDataViewMinX(), xScale);

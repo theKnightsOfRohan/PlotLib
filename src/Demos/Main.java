@@ -33,7 +33,7 @@ public class Main extends PApplet {
         plt.draw(this);
 
         if (mousePressed && keyPressed && key == CODED && keyCode == CONTROL) {
-            plt.zoomIn(0.01, 0.05, mouseX, mouseY);
+            plt.zoomInOn(0.01, 0.05, mouseX, mouseY);
         }
 
         if (mousePressed && startClick != null) {
