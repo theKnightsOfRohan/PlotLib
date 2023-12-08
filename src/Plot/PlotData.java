@@ -1,5 +1,6 @@
 package Plot;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,30 @@ public class PlotData {
 
     private double minX, maxX, minY, maxY;  // for raw values in x, y
     private boolean dirty = false;          // has data changed without updating pre-calculated values?
+
+    public PlotData(PlotData toCopy) {
+        this.strokeWeight = toCopy.strokeWeight;
+        this.strokeColor = toCopy.strokeColor;
+        this.fillColor = toCopy.fillColor;
+        this.style = toCopy.style;  // TODO:  will this cause bugs?
+        this.x = new ArrayList<Double>();
+        for (Double val : toCopy.x) {
+            x.add(val);
+        }
+        this.y = new ArrayList<Double>();
+        for (Double val : toCopy.y) {
+            y.add(val);
+        }
+
+        this.pixelX = new ArrayList<Integer>();
+        for (Integer val : toCopy.pixelX) {
+            pixelX.add(val);
+        }
+        this.pixelY = new ArrayList<Integer>();
+        for (Integer val : toCopy.pixelY) {
+            pixelY.add(val);
+        }
+    }
 
     /***
      * Create PlotData object from pre-made data lists x and y
