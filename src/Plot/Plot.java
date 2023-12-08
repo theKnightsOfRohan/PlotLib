@@ -279,7 +279,7 @@ public abstract class Plot {
             window.rect(cornerX, cornerY, width, height);
         }
 
-        axes.draw(window);
+        axes.draw(this, window);
     }
 
     public double getScreenXFor(double dataX) {
@@ -366,15 +366,15 @@ public abstract class Plot {
         protected int xAxisTextSize = 10;
         protected int yAxisTextSize = 10;
 
-        protected void draw(PApplet window) {
+        protected void draw(Plot plot, PApplet window) {
             if (getDomain() == 0 || getRange() == 0)
                 return;
 
             numXLines = (width / MIN_PIXEL_SPACING);
             numYLines = (height / MIN_PIXEL_SPACING);
 
-            double[] xScaleInfo = calcScale(getDataViewMinX(), getDataViewMaxX(), numXLines);
-            double[] yScaleInfo = calcScale(getDataViewMinY(), getDataViewMaxY(), numYLines);
+            double[] xScaleInfo = calcScale(plot.getDataViewMinX(), plot.getDataViewMaxX(), numXLines);
+            double[] yScaleInfo = calcScale(plot.getDataViewMinY(), plot.getDataViewMaxY(), numYLines);
             this.xScale = xScaleInfo[0];
             this.yScale = yScaleInfo[0];
             this.xScaleSigFigs = Math.max(0, -(int) xScaleInfo[1]); // 2 decimals is 10^(-2). -2 --> 2
@@ -383,10 +383,10 @@ public abstract class Plot {
 
 
             // --------------- draw major x grid -----------------------------------------
-            double startX = MathUtils.ceilToNearest(getDataViewMinX(), xScale);
+            double startX = MathUtils.ceilToNearest(plot.getDataViewMinX(), xScale);
 
             double val = startX;
-            double x = getScreenXFor(val);
+            double x = plot.getScreenXFor(val);
             int i = 0;
             while (x <= cornerX + width) {
                 window.line((float) x, cornerY, (float) x, cornerY + height);
@@ -396,11 +396,11 @@ public abstract class Plot {
                 window.stroke(0);
                 String value = String.format("%." + this.xScaleSigFigs + "f", val);
                 window.textAlign(PConstants.LEFT);
-                window.text(value, (float) x - getCenterShiftAmount(window, value), getBottomY() + xAxisTextSize + getXAxisTextYAdjust());
+                window.text(value, (float) x - getCenterShiftAmount(window, value), plot.getBottomY() + xAxisTextSize + plot.getXAxisTextYAdjust());
 
                 i++;
                 val = startX + i * xScale;
-                x = getScreenXFor(val);
+                x = plot.getScreenXFor(val);
             }
 
             // -------------- draw minor grid -----------------------------------
@@ -418,7 +418,7 @@ public abstract class Plot {
 
             double startY = MathUtils.ceilToNearest(getDataViewMinY(), yScale);
             val = startY + yScale;
-            double y = getScreenYFor(val);
+            double y = plot.getScreenYFor(val);
             i = 0;
             while (y >= cornerY) {
                 window.line(cornerX, (float) y, cornerX + width, (float) y);
@@ -429,11 +429,11 @@ public abstract class Plot {
 
                 String value = String.format("%." + this.yScaleSigFigs + "f", val);
                 window.textAlign(PConstants.RIGHT, PConstants.CENTER);
-                window.text(value, getLeftX() + getYAxisTextXAdjust(), (float) y - yAxisTextSize*0.1f);
+                window.text(value, plot.getLeftX() + plot.getYAxisTextXAdjust(), (float) y - yAxisTextSize*0.1f);
 
                 i++;
                 val = startY + i * yScale;
-                y = getScreenYFor(val);
+                y = plot.getScreenYFor(val);
             }
         }
 
