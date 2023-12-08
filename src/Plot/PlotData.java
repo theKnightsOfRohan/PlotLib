@@ -6,6 +6,8 @@ import java.util.List;
 
 import processing.core.PApplet;
 
+import static Plot.PlotData.Style.*;
+
 /***
  * Object containing data and view info for one set within a plot.
  */
@@ -59,7 +61,7 @@ public class PlotData {
 
     /***
      * Create PlotData object from pre-made data lists x and y
-     * 
+     *
      * @param x list of x coordinates
      * @param y list of y coordinates
      */
@@ -72,14 +74,14 @@ public class PlotData {
 
         strokeColor = BLACK;
         fillColor = BLACK;
-        style = Style.POINT;
+        style = POINT;
         strokeWeight = 1;
         dashLength = 5;
     }
 
     /***
      * Create PlotData object from pre-made data lists x and y
-     * 
+     *
      * @param x array of x coordinates
      * @param y array of y coordinates
      */
@@ -97,7 +99,7 @@ public class PlotData {
 
     /***
      * Remove (x, y) coordinates at index index
-     * 
+     *
      * @param index the index to remove (x, y) coordinates from the plot
      */
     public void remove(int index) {
@@ -114,7 +116,7 @@ public class PlotData {
     /***
      * Set the minimum x value to include in the plot (does not need to be a data
      * point)
-     * 
+     *
      * @param dataMinX the value to set the minimum display to
      */
     public void setDataMinX(double dataMinX) {
@@ -124,7 +126,7 @@ public class PlotData {
     /***
      * Set the maximum x value to include in the plot (does not need to be a data
      * point)
-     * 
+     *
      * @param dataMaxX the value to set the maximum display to
      */
     public void setDataMaxX(double dataMaxX) {
@@ -133,7 +135,7 @@ public class PlotData {
 
     /***
      * Get the x coordinate of raw data (not pixel value) at index i
-     * 
+     *
      * @param i
      * @return
      */
@@ -151,7 +153,7 @@ public class PlotData {
 
     /***
      * Add a new set of data coordinates to the plot
-     * 
+     *
      * @param new_x new x value
      * @param new_y new y value
      */
@@ -165,7 +167,7 @@ public class PlotData {
 
     /***
      * Update the min and max values to reflect a new set of data points
-     * 
+     *
      * @param new_x
      * @param new_y
      */
@@ -208,14 +210,14 @@ public class PlotData {
      * Re-scale dataset to bounds given by parameters. Used by Plot.Plot to
      * transform data for display once and then
      * never again until updated.
-     * 
+     *
      * @param displayMinX
      * @param displayMaxX
      * @param displayMinY
      * @param displayMaxY
      */
     public void rescale(double displayMinX, double displayMaxX, double displayMinY, double displayMaxY,
-            double dataMinX, double dataMaxX, double dataMinY, double dataMaxY) {
+                        double dataMinX, double dataMaxX, double dataMinY, double dataMaxY) {
         pixelX.clear();
         pixelY.clear();
 
@@ -241,10 +243,12 @@ public class PlotData {
     }
 
     public PlotData style(String style) {
-        switch (style) {
-            case "." -> this.style = Style.POINT;
-            case "-" -> this.style = Style.LINE;
-            case "--" -> this.style = Style.DASH;
+        if (".".equals(style)) {
+            this.style = POINT;
+        } else if ("-".equals(style)) {
+            this.style = LINE;
+        } else if ("--".equals(style)) {
+            this.style = Style.DASH;
         }
 
         return this;
@@ -323,34 +327,28 @@ public class PlotData {
         window.stroke(this.getStrokeColor());
         window.strokeWeight(this.getStrokeWeight());
 
-        switch (this.getStyle()) {
-            case POINT -> {
-                for (int i = 0; i < this.size(); i++) {
-                    window.ellipse(this.getDisplayX(i), this.getDisplayY(i), 2, 2);
-                }
+        if (this.getStyle() == POINT) {
+            for (int i = 0; i < this.size(); i++) {
+                window.ellipse(this.getDisplayX(i), this.getDisplayY(i), 2, 2);
             }
-            case LINE -> {
-                for (int i = 1; i < this.size(); i++) {
-                    float x1 = this.getDisplayX(i - 1);
-                    float y1 = this.getDisplayY(i - 1);
-                    float x2 = this.getDisplayX(i);
-                    float y2 = this.getDisplayY(i);
+        } else if (this.getStyle() == LINE) {
+            for (int i = 1; i < this.size(); i++) {
+                float x1 = this.getDisplayX(i - 1);
+                float y1 = this.getDisplayY(i - 1);
+                float x2 = this.getDisplayX(i);
+                float y2 = this.getDisplayY(i);
+                window.line(x1, y1, x2, y2);
+            }
+        } else if (this.getStyle() == DASH) {
+            for (int i = dashLength; i < this.size() - dashLength; i += dashLength) {
+                for (int j = i - dashLength / 3; j < i + dashLength / 3; j++) {
+                    float x1 = this.getDisplayX(j);
+                    float y1 = this.getDisplayY(j);
+                    float x2 = this.getDisplayX(j + 1);
+                    float y2 = this.getDisplayY(j + 1);
                     window.line(x1, y1, x2, y2);
                 }
             }
-            case DASH -> {
-                for (int i = dashLength; i < this.size() - dashLength; i += dashLength) {
-                    for (int j = i - dashLength / 3; j < i + dashLength / 3; j++) {
-                        float x1 = this.getDisplayX(j);
-                        float y1 = this.getDisplayY(j);
-                        float x2 = this.getDisplayX(j + 1);
-                        float y2 = this.getDisplayY(j + 1);
-                        window.line(x1, y1, x2, y2);
-                    }
-                }
-            }
         }
-
     }
-
 }

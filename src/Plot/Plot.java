@@ -425,8 +425,6 @@ public abstract class Plot {
                 window.stroke(0);
 
                 String value = String.format("%." + this.yScaleSigFigs + "f", val);
-                window.textAlign(PConstants.RIGHT);
-                window.text(value, getLeftX() + -yAxisTextXAdjust / 2 + getYAxisTextXAdjust(), (float) y);
                 window.textAlign(PConstants.RIGHT, PConstants.CENTER);
                 window.text(value, getLeftX() + getYAxisTextXAdjust(), (float) y - yAxisTextSize*0.1f);
 
