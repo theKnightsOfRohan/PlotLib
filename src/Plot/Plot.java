@@ -84,6 +84,9 @@ public abstract class Plot {
 
         drawAxes(window);
         drawDataPoints(window);
+
+        window.fill(0);         // kludgy hack to insure axes display in black always?
+        window.stroke(0);
     }
 
     public boolean containsMouse(PApplet window) {
