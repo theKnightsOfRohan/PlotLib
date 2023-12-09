@@ -198,7 +198,7 @@ public abstract class Plot {
         needScaling = false;
     }
 
-    public abstract PlotData plot(int index, double x, double y);
+    public abstract PlotData plot(int dataSetId, double x, double y);
 
     protected boolean inDataYRange(double y) {
         return (this.dataMinY <= y && y <= this.dataMaxY);
@@ -391,12 +391,12 @@ public abstract class Plot {
         return Plot.map(screenY, cornerY + height, cornerY, getDataViewMinY(), getDataViewMaxY());
     }
 
-    public void removePlot(int plotIndex) {
-        if (plotIndex < 0 || plotIndex >= this.datasets.size()) {
-            System.err.println("Error: plotIndex out of bounds");
+    public void removePlot(int dataSetId) {
+        if (dataSetId < 0 || dataSetId >= this.datasets.size()) {
+            System.err.println("Error: dataSet out of bounds");
             return;
         }
-        this.datasets.remove(plotIndex);
+        this.datasets.remove(dataSetId);
     }
 
     public void setYDataRangeMin(double dataYMin) {

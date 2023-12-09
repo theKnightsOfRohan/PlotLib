@@ -31,16 +31,16 @@ public class TimeSeriesPlot extends Plot {
      * Note: if freeze_y_scale setting is true and point is out of range it won't be
      * added.
      * 
-     * @param index
+     * @param dataSetId
      * @param x
      * @param y
      * @return
      */
-    public PlotData plot(int index, double x, double y) {
+    public PlotData plot(int dataSetId, double x, double y) {
         PlotData data;
 
-        if (index >= 0 && index < datasets.size()) {
-            data = datasets.get(index);
+        if (dataSetId >= 0 && dataSetId < datasets.size()) {
+            data = datasets.get(dataSetId);
         } else {
             data = new PlotData();
             this.datasets.add(data);
