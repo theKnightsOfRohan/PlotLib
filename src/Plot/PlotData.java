@@ -329,7 +329,9 @@ public class PlotData {
 
         if (this.getStyle() == POINT) {
             for (int i = 0; i < this.size(); i++) {
-                window.ellipse(this.getDisplayX(i), this.getDisplayY(i), 2, 2);
+                if ( p.isInBounds(this.getDisplayX(i), this.getDisplayY(i)) ) {
+                    window.ellipse(this.getDisplayX(i), this.getDisplayY(i), 2, 2);
+                }
             }
         } else if (this.getStyle() == LINE) {
             for (int i = 1; i < this.size(); i++) {
@@ -351,6 +353,8 @@ public class PlotData {
                     float y1 = this.getDisplayY(j);
                     float x2 = this.getDisplayX(j + 1);
                     float y2 = this.getDisplayY(j + 1);
+
+
                     window.line(x1, y1, x2, y2);
                 }
             }

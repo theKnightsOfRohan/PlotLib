@@ -252,7 +252,7 @@ public abstract class Plot {
         dataset.drawSelf(window, this);
     }
 
-    private boolean isInBounds(float x, float y) {
+    public boolean isInBounds(float x, float y) {
         if (x < getLeftX() || x > getRightX()) return false;
         if (y < getTopY() || y > getBottomY()) return false;
         return true;
