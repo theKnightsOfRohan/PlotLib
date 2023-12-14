@@ -25,6 +25,7 @@ public class Main5 extends PApplet {
 		}
 
 		plt.plot(x, y).fillColor("red").strokeWeight(5).strokeColor("red").style("--").dashLength(50);
+		plt.plotLine(.5, "horizontal").strokeColor("green").strokeWeight(2).style("-").dashLength(10);
 	}
 
 	public void draw() {

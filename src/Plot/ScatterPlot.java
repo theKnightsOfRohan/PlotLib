@@ -7,12 +7,12 @@ import java.util.List;
 public class ScatterPlot extends Plot {
 
     public ScatterPlot(ScatterPlot plotToCopy) {
-        super(0,0,0,0); // will get reset below
+        super(0, 0, 0, 0); // will get reset below
         this.cornerX = plotToCopy.cornerX;
         this.cornerY = plotToCopy.cornerY;
         this.width = plotToCopy.width;
         this.height = plotToCopy.height;
-        this.settings = (HashMap<Setting, Boolean>)plotToCopy.settings.clone(); // =\
+        this.settings = (HashMap<Setting, Boolean>) plotToCopy.settings.clone(); // =\
         this.axes = plotToCopy.axes;
         setDataSets(plotToCopy);
         this.dataMinX = plotToCopy.dataMinX;
@@ -30,7 +30,7 @@ public class ScatterPlot extends Plot {
     private void setDataSets(ScatterPlot plotToCopy) {
         this.datasets = new ArrayList<PlotData>();
         for (PlotData dataset : plotToCopy.datasets) {
-            this.datasets.add( copyDataSet(dataset) );
+            this.datasets.add(copyDataSet(dataset));
         }
     }
 
@@ -81,6 +81,23 @@ public class ScatterPlot extends Plot {
 
         data.add(x, y);
         updateDataBoundsWith(data);
+        return data;
+    }
+
+    public PlotData plotLine(double i, String direction) {
+        PlotData data = new PlotData();
+        if (direction.equals("horizontal")) {
+            data.add(dataMinX, i);
+            data.add(dataMaxX, i);
+        } else if (direction.equals("vertical")) {
+            data.add(i, dataMinY);
+            data.add(i, dataMaxY);
+        } else {
+            System.out.println("Invalid direction. Must be 'horizontal' or 'vertical'.");
+        }
+
+        this.datasets.add(data);
+
         return data;
     }
 }
