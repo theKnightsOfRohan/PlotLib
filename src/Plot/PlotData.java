@@ -39,7 +39,7 @@ public class PlotData {
         this.strokeWeight = toCopy.strokeWeight;
         this.strokeColor = toCopy.strokeColor;
         this.fillColor = toCopy.fillColor;
-        this.style = toCopy.style;  // TODO:  will this cause bugs?
+        this.style = toCopy.style; // TODO: will this cause bugs?
         this.x = new ArrayList<Double>();
         for (Double val : toCopy.x) {
             x.add(val);
@@ -217,7 +217,7 @@ public class PlotData {
      * @param displayMaxY
      */
     public void rescale(double displayMinX, double displayMaxX, double displayMinY, double displayMaxY,
-                        double dataMinX, double dataMaxX, double dataMinY, double dataMaxY) {
+            double dataMinX, double dataMaxX, double dataMinY, double dataMaxY) {
         pixelX.clear();
         pixelY.clear();
 
@@ -227,11 +227,27 @@ public class PlotData {
         }
     }
 
+    /**
+     * Sets the fill color of the plot data.
+     * Currently supports: "red", "blue", "black", "green"
+     * Attempting an unsupported color will default to black.
+     * 
+     * @param color the color to set
+     * @return the updated PlotData object
+     */
     public PlotData fillColor(String color) {
         this.fillColor = getColorValFor(color);
         return this;
     }
 
+    /**
+     * Sets the stroke color of the plot data.
+     * Currently supports: "red", "blue", "black", "green"
+     * Attempting an unsupported color will default to black.
+     * 
+     * @param color the color to set
+     * @return the updated PlotData object
+     */
     public PlotData strokeColor(String color) {
         this.strokeColor = getColorValFor(color);
         return this;
@@ -242,6 +258,15 @@ public class PlotData {
         return this;
     }
 
+    /**
+     * Sets the style of the plot data.
+     * "." = points, "-" = line, "--" = dashed line
+     * 
+     * (Note: dash style requires a .dashLength() to be set.
+     * 
+     * @param style the style to set
+     * @return the PlotData object with the updated style
+     */
     public PlotData style(String style) {
         if (".".equals(style)) {
             this.style = POINT;
@@ -249,11 +274,20 @@ public class PlotData {
             this.style = LINE;
         } else if ("--".equals(style)) {
             this.style = Style.DASH;
+        } else {
+            System.err.println("Style " + style + " not recognized.");
         }
 
         return this;
     }
 
+    /**
+     * Sets the length of the dash for the plot data. This value determines the
+     * number of points in your dataset to connect at a time.
+     * 
+     * @param length the length of the dash
+     * @return the updated PlotData object
+     */
     public PlotData dashLength(int length) {
         this.dashLength = length;
         return this;
@@ -268,6 +302,8 @@ public class PlotData {
             return BLACK;
         } else if (color.equals("green")) {
             return GREEN;
+        } else {
+            System.err.println("Color " + color + " not recognized.\nDefaulting to black.");
         }
 
         return BLACK;
@@ -322,6 +358,13 @@ public class PlotData {
         }
     }
 
+    /**
+     * Draws the plot data on the given PApplet window using the specified plot
+     * configuration. Draws the line based on the style of the plot data.
+     *
+     * @param window The PApplet window on which to draw the plot data.
+     * @param p      The Plot to use for drawing.
+     */
     public void drawSelf(PApplet window, Plot p) {
         window.fill(this.getFillColor());
         window.stroke(this.getStrokeColor());
@@ -329,7 +372,7 @@ public class PlotData {
 
         if (this.getStyle() == POINT) {
             for (int i = 0; i < this.size(); i++) {
-                if ( p.isInBounds(this.getDisplayX(i), this.getDisplayY(i)) ) {
+                if (p.isInBounds(this.getDisplayX(i), this.getDisplayY(i))) {
                     window.ellipse(this.getDisplayX(i), this.getDisplayY(i), 2, 2);
                 }
             }
@@ -340,7 +383,7 @@ public class PlotData {
                 float x2 = this.getDisplayX(i);
                 float y2 = this.getDisplayY(i);
 
-                int[] clipped = p.clipLine((int)x1, (int)y1, (int)x2, (int)y2);
+                int[] clipped = p.clipLine((int) x1, (int) y1, (int) x2, (int) y2);
 
                 if (clipped != null) {
                     window.line(clipped[0], clipped[1], clipped[2], clipped[3]);
@@ -353,7 +396,6 @@ public class PlotData {
                     float y1 = this.getDisplayY(j);
                     float x2 = this.getDisplayX(j + 1);
                     float y2 = this.getDisplayY(j + 1);
-
 
                     window.line(x1, y1, x2, y2);
                 }

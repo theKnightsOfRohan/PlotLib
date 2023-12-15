@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Represents a scatter plot, displaying data points as
+ * individual markers on a coordinate system.
+ */
 public class ScatterPlot extends Plot {
 
     public ScatterPlot(ScatterPlot plotToCopy) {
@@ -27,6 +31,12 @@ public class ScatterPlot extends Plot {
         this.needScaling = plotToCopy.needScaling;
     }
 
+    /**
+     * Sets the data sets for the scatter plot by copying the data sets from another
+     * scatter plot.
+     * 
+     * @param plotToCopy the scatter plot from which to copy the data sets
+     */
     private void setDataSets(ScatterPlot plotToCopy) {
         this.datasets = new ArrayList<PlotData>();
         for (PlotData dataset : plotToCopy.datasets) {
@@ -34,6 +44,12 @@ public class ScatterPlot extends Plot {
         }
     }
 
+    /**
+     * Creates a copy of the given PlotData object.
+     *
+     * @param dataset The PlotData object to be copied.
+     * @return A new PlotData object that is a copy of the given dataset.
+     */
     private PlotData copyDataSet(PlotData dataset) {
         return new PlotData(dataset);
     }
@@ -42,6 +58,13 @@ public class ScatterPlot extends Plot {
         super(x1, y1, x2, y2);
     }
 
+    /**
+     * Plots the given data points on the scatter plot.
+     * 
+     * @param xData the x-coordinates of the data points
+     * @param yData the y-coordinates of the data points
+     * @return the PlotData object representing the plotted data
+     */
     public PlotData plot(double[] xData, double[] yData) {
         List<Double> xList = MathUtils.toList(xData);
         List<Double> yList = MathUtils.toList(yData);
@@ -53,6 +76,13 @@ public class ScatterPlot extends Plot {
         return data;
     }
 
+    /**
+     * Plots the given data points on the scatter plot.
+     *
+     * @param xData The x-coordinates of the data points.
+     * @param yData The y-coordinates of the data points.
+     * @return The PlotData object representing the plotted data.
+     */
     public PlotData plot(List<Double> xData, List<Double> yData) {
         PlotData data = new PlotData(xData, yData);
         updateDataBoundsWith(data);
@@ -84,16 +114,24 @@ public class ScatterPlot extends Plot {
         return data;
     }
 
-    public PlotData plotLine(double i, String direction) {
+    /**
+     * Plots a horizontal or vertical line on the scatter plot.
+     * 
+     * @param i         the x- or y-coordinate of the line
+     * @param direction the direction of the line ("horizontal" or "vertical")
+     */
+    public PlotData plotLine(double val, String direction) {
         PlotData data = new PlotData();
         if (direction.equals("horizontal")) {
-            data.add(dataMinX, i);
-            data.add(dataMaxX, i);
+            for (double x = dataMinX; x <= dataMaxX; x += (dataMaxX - dataMinX) / 1000.0) {
+                data.add(x, val);
+            }
         } else if (direction.equals("vertical")) {
-            data.add(i, dataMinY);
-            data.add(i, dataMaxY);
+            for (double y = dataMinY; y <= dataMaxY; y += (dataMaxY - dataMinY) / 1000.0) {
+                data.add(val, y);
+            }
         } else {
-            System.out.println("Invalid direction. Must be 'horizontal' or 'vertical'.");
+            System.err.println("Invalid direction. Must be 'horizontal' or 'vertical'.");
         }
 
         this.datasets.add(data);
