@@ -1,0 +1,48 @@
+plugins {
+   id 'java'
+}
+
+sourceSets {
+   main {
+	   java {
+		   srcDirs = ['src/Plot']
+	   }
+   }
+   test {
+	   java {
+		   srcDirs = ['src/Tests']
+	   }
+   }
+   demo {
+      java {
+         srcDirs = ['src/Demos']
+      }
+      runtimeClasspath += main.runtimeClasspath
+   }
+}
+
+test {
+   testLogging {
+	   showStandardStreams = true
+   }
+}
+
+dependencies {
+   implementation fileTree(dir: 'lib', include: ['*.jar'])
+   demoImplementation fileTree(dir: 'lib', include: ['*.jar'])
+   demoImplementation files('build/libs/PlotLib.jar')
+}
+
+java {
+   sourceCompatibility = 1.8
+   targetCompatibility = 1.8
+}
+
+compileDemoJava {
+   dependsOn jar
+}
+
+task runDemos(type: JavaExec) {
+   classpath = sourceSets.demo.runtimeClasspath
+   main = 'Demos.Main'
+}

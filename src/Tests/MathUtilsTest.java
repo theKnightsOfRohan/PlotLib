@@ -1,14 +1,15 @@
 package Tests;
 
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import Plot.MathUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 public class MathUtilsTest {
+	static final double acceptableDelta = 0.0001;
 
 	@Test
 	public void testLinspace() {
@@ -17,7 +18,7 @@ public class MathUtilsTest {
 		int num = 10;
 		double[] expected = { -5.0, -4.0, -3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0, 4.0 };
 		double[] result = MathUtils.linspace(min, max, num);
-		assertArrayEquals(expected, result);
+		assertArrayEquals(expected, result, acceptableDelta);
 	}
 
 	@Test
@@ -26,7 +27,7 @@ public class MathUtilsTest {
 		DoubleUnaryOperator f = Math::sqrt;
 		double[] expected = { 1.0, 1.4142135623730951, 1.7320508075688772, 2.0, 2.23606797749979 };
 		double[] result = MathUtils.apply(f, x);
-		assertArrayEquals(expected, result);
+		assertArrayEquals(expected, result, acceptableDelta);
 	}
 
 	@Test
@@ -59,7 +60,7 @@ public class MathUtilsTest {
 		double M = 2.0;
 		double expected = 8.0;
 		double result = MathUtils.ceilToNearest(val, M);
-		assertEquals(expected, result);
+		assertEquals(expected, result, acceptableDelta);
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class MathUtilsTest {
 		double M = 2.0;
 		double expected = 8.0;
 		double result = MathUtils.roundToNearest(val, M);
-		assertEquals(expected, result);
+		assertEquals(expected, result, acceptableDelta);
 	}
 
 }

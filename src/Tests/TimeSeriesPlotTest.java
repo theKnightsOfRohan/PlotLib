@@ -3,18 +3,21 @@ package Tests;
 import Plot.TimeSeriesPlot;
 import Plot.Plot.Setting;
 import Plot.PlotData;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class TimeSeriesPlotTest {
+    static final double acceptableDelta = 0.0001;
+
     @Test
     public void testPlot() {
         TimeSeriesPlot plot = new TimeSeriesPlot(0, 0, 100, 100, 5);
         PlotData result = plot.plot(1.0, 2.0);
         assertEquals(1, plot.getDatasets().size());
         assertEquals(1, result.size());
-        assertEquals(1.0, result.getDataX(0));
-        assertEquals(2.0, result.getDataY(0));
+        assertEquals(1.0, result.getDataX(0), acceptableDelta);
+        assertEquals(2.0, result.getDataY(0), acceptableDelta);
     }
 
     @Test
@@ -24,8 +27,8 @@ public class TimeSeriesPlotTest {
         PlotData result = plot.plot(3.0, 4.0);
         assertEquals(1, plot.getDatasets().size());
         assertEquals(2, result.size());
-        assertEquals(3.0, result.getDataX(1));
-        assertEquals(4.0, result.getDataY(1));
+        assertEquals(3.0, result.getDataX(1), acceptableDelta);
+        assertEquals(4.0, result.getDataY(1), acceptableDelta);
     }
 
     @Test
@@ -34,8 +37,8 @@ public class TimeSeriesPlotTest {
         PlotData result = plot.plot(1, 2.0, 3.0);
         assertEquals(1, plot.getDatasets().size());
         assertEquals(1, result.size());
-        assertEquals(2.0, result.getDataX(0));
-        assertEquals(3.0, result.getDataY(0));
+        assertEquals(2.0, result.getDataX(0), acceptableDelta);
+        assertEquals(3.0, result.getDataY(0), acceptableDelta);
     }
 
     @Test

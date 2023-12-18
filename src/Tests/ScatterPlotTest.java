@@ -2,7 +2,6 @@ package Tests;
 
 import Plot.PlotData;
 import Plot.ScatterPlot;
-import Plot.Plot.Setting;
 
 import org.junit.Before;
 import org.junit.Test;
