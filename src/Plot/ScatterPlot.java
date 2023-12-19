@@ -54,6 +54,14 @@ public class ScatterPlot extends Plot {
         return new PlotData(dataset);
     }
 
+    /**
+     * Creates a new scatter plot with the given dimensions.
+     * 
+     * @param x1 the x-coordinate of the top-left corner
+     * @param y1 the y-coordinate of the top-left corner
+     * @param x2 the x-coordinate of the bottom-right corner
+     * @param y2 the y-coordinate of the bottom-right corner
+     */
     public ScatterPlot(int x1, int y1, int x2, int y2) {
         super(x1, y1, x2, y2);
     }
@@ -123,15 +131,12 @@ public class ScatterPlot extends Plot {
     public PlotData plotLine(double val, String direction) {
         PlotData data = new PlotData();
         if (direction.equals("horizontal")) {
-            for (double x = dataMinX; x <= dataMaxX; x += (dataMaxX - dataMinX) / 1000.0) {
-                data.add(x, val);
-            }
+            data.add(MathUtils.linspace(dataMinX, dataMaxX, 1000), MathUtils.linspace(val, val, 1000));
         } else if (direction.equals("vertical")) {
-            for (double y = dataMinY; y <= dataMaxY; y += (dataMaxY - dataMinY) / 1000.0) {
-                data.add(val, y);
-            }
+            data.add(MathUtils.linspace(val, val, 1000), MathUtils.linspace(dataMinY, dataMaxY, 1000));
         } else {
             System.err.println("Invalid direction. Must be 'horizontal' or 'vertical'.");
+            return null;
         }
 
         this.datasets.add(data);

@@ -163,6 +163,25 @@ public class PlotData {
     }
 
     /***
+     * Add multiple new data points to the plot.
+     * Note: x and y arrays must be the same length, as each index in x corresponds
+     * to the same index in y.
+     *
+     * @param new_x new x values
+     * @param new_y new y values
+     */
+    public void add(double[] new_x, double[] new_y) {
+        if (new_x.length != new_y.length) {
+            System.err.println("Error: x and y arrays must be the same length");
+            return;
+        }
+
+        for (int i = 0; i < new_x.length; i++) {
+            add(new_x[i], new_y[i]);
+        }
+    }
+
+    /***
      * Update the min and max values to reflect a new set of data points
      *
      * @param new_x
