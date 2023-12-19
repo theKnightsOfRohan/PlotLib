@@ -3,8 +3,8 @@ package Demos;
 import Plot.ScatterPlot;
 import processing.core.PApplet;
 
-public class Main2 extends PApplet {
-    ScatterPlot plt;         // TODO: add ability to be fixed size; new points bump off old points
+public class InteractiveGraph extends PApplet {
+    ScatterPlot plt; // TODO: add ability to be fixed size; new points bump off old points
     int time = 0;
 
     public void settings() {
@@ -14,7 +14,7 @@ public class Main2 extends PApplet {
     public void setup() {
         plt = new ScatterPlot(100, 100, 700, 700);
 
-        plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
+        plt.set(ScatterPlot.Setting.show_axes, true); // TODO: make a nice api for this
         plt.set(ScatterPlot.Setting.show_border, true);
         plt.setTextSize(30);
     }
@@ -32,6 +32,6 @@ public class Main2 extends PApplet {
     }
 
     public static void main(String[] args) {
-        PApplet.main("Demos.Main2");
+        PApplet.main("Demos.InteractiveGraph");
     }
 }

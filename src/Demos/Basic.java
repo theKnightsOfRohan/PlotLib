@@ -5,7 +5,7 @@ import Plot.ScatterPlot;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Main extends PApplet {
+public class Basic extends PApplet {
     ScatterPlot plt;
     private PVector startClick, endClick;
 
@@ -20,7 +20,7 @@ public class Main extends PApplet {
         double[] y1 = MathUtils.apply(Math::sin, x);
         double[] y2 = MathUtils.apply(Math::cos, x);
 
-        plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
+        plt.set(ScatterPlot.Setting.show_axes, true); // TODO: make a nice api for this
         plt.set(ScatterPlot.Setting.show_border, true);
         plt.setTextSize(20);
 
@@ -37,7 +37,7 @@ public class Main extends PApplet {
         }
 
         if (mousePressed && startClick != null) {
-            fill(0,0,0,0);
+            fill(0, 0, 0, 0);
             stroke(0);
             rect(startClick.x, startClick.y, (mouseX - startClick.x), (mouseY - startClick.y));
         }
@@ -63,6 +63,6 @@ public class Main extends PApplet {
     }
 
     public static void main(String[] args) {
-        PApplet.main("Demos.Main");
+        PApplet.main("Demos.Basic");
     }
 }

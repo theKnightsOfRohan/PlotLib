@@ -5,8 +5,8 @@ import Plot.TimeSeriesPlot;
 import Plot.ScatterPlot;
 import processing.core.PApplet;
 
-public class Main3 extends PApplet {
-    Plot plt;         // TODO: add ability to be fixed size; new points bump off old points
+public class MovingWindow extends PApplet {
+    Plot plt; // TODO: add ability to be fixed size; new points bump off old points
     int time = 0;
     double yVal = 380;
 
@@ -16,10 +16,10 @@ public class Main3 extends PApplet {
 
     public void setup() {
         plt = new TimeSeriesPlot(0, 0, 800, 400, 100);
-        plt.set(ScatterPlot.Setting.show_axes, true);      // TODO: make a nice api for this
+        plt.set(ScatterPlot.Setting.show_axes, true); // TODO: make a nice api for this
         plt.set(ScatterPlot.Setting.show_border, true);
-        //plt.set(Plot.ScatterPlot.Setting.freeze_y_scale, true);
-        //plt.setYDataRange(0, 400);
+        // plt.set(Plot.ScatterPlot.Setting.freeze_y_scale, true);
+        // plt.setYDataRange(0, 400);
     }
 
     public void draw() {
@@ -28,12 +28,12 @@ public class Main3 extends PApplet {
         plt.plot(1, time, yVal).strokeColor("green").style(".").strokeWeight(10);
         time++;
 
-        yVal += -3 + Math.random()*6;
+        yVal += -3 + Math.random() * 6;
 
         plt.draw(this);
     }
 
     public static void main(String[] args) {
-        PApplet.main("Demos.Main3");
+        PApplet.main("Demos.MovingWindow");
     }
 }

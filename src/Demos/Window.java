@@ -6,7 +6,7 @@ import Plot.ScatterPlot;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Main6  {
+public class Window {
     ScatterPlot plt;
     private PVector startClick, endClick;
 
@@ -25,7 +25,7 @@ public class Main6  {
             plt.plot(0, x[i], y2[i]).strokeColor("blue").strokeWeight(2).style(".");
         }
 
-        PlotWindow window = PlotWindow.getWindowFor(plt, 1200,800);
+        PlotWindow window = PlotWindow.getWindowFor(plt, 1200, 800);
         window.show();
     }
 
