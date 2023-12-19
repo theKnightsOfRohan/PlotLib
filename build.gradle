@@ -27,10 +27,20 @@ test {
    }
 }
 
+repositories {
+   mavenCentral()
+}
+
+// Note: processing.core has some issues with Apple machines
+// And the Apple version of processing.core is not available on maven central
+// https://stackoverflow.com/questions/47343612/cannot-compile-when-importing-processing-library-into-eclipse
 dependencies {
    implementation fileTree(dir: 'lib', include: ['*.jar'])
+   // implementation 'org.processing:core:3.3.7'
    demoImplementation fileTree(dir: 'lib', include: ['*.jar'])
    demoImplementation files('build/libs/PlotLib.jar')
+   // demoImplementation 'org.processing:core:3.3.7'
+   testImplementation 'junit:junit:4.12'
 }
 
 java {

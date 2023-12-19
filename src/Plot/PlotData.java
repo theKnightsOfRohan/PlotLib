@@ -1,11 +1,8 @@
 package Plot;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
-
 import processing.core.PApplet;
-
 import static Plot.PlotData.Style.*;
 
 /***
