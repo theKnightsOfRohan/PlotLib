@@ -50,6 +50,22 @@ public class MathUtils {
         return Arrays.stream(x).map(f).toArray();
     }
 
+    public static List<Double> copyDoubleList(List<Double> list) {
+        return list.stream().collect(Collectors.toList());
+    }
+
+    public static List<Integer> copyIntList(List<Integer> list) {
+        return list.stream().collect(Collectors.toList());
+    }
+
+    public static int[] copyArr(int[] arr) {
+        return Arrays.copyOf(arr, arr.length);
+    }
+
+    public static double[] copyArr(double[] arr) {
+        return Arrays.copyOf(arr, arr.length);
+    }
+
     /***
      * Convert a double[] to List<Double>
      * 
